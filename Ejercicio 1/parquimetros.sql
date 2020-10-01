@@ -46,7 +46,7 @@ CREATE TABLE automoviles
 
     CONSTRAINT FK_automoviles_conductores
     FOREIGN KEY (dni) REFERENCES conductores(dni)
-        ON DELETE RESTRICT ON UPDATE CASCADE
+        ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE tipos_tarjeta
@@ -86,7 +86,7 @@ CREATE TABLE inspectores
     dni INT UNSIGNED NOT NULL,
     nombre VARCHAR(45) NOT NULL,
     apellido VARCHAR(45) NOT NULL,
-    password CHAR(32) NOT NULL, #Usando MD5
+    password CHAR(32), # Usando MD5
 
     CONSTRAINT pk_inspectores
     PRIMARY KEY (legajo)
@@ -280,6 +280,7 @@ CREATE TABLE multa
     # Otorgamiento de acceso a la tabla Tarjeta de DB
          
     GRANT INSERT PRIVILEGES ON parquimetros.tarjeta TO 'venta'@'%';
+    GRANT SELECT PRIVILEGES ON parquimetros.tipos_tarjeta TO 'venta'@'%';
     
 # Creación del usuario inspector
     # Nombre: inspector
@@ -289,7 +290,11 @@ CREATE TABLE multa
     CREATE USER 'inspector'@'%' IDENTIFIED BY 'inspector';
 
     # Otorgamiento de privilegios:
-        
+
+        # Acceso a la tabla estacionados
+
+    GRANT SELECT PRIVILEGES ON parquimetros.estacionados TO 'inspector'@'%';
+
         # Carga de multas
 
     GRANT INSERT PRIVILEGES ON parquimetros.multa TO 'inspector'@'%';
@@ -302,3 +307,9 @@ CREATE TABLE multa
 
         # Validación de números de legajo y password de un inspector
 
+    
+# Preguntas
+    # Cómo dar privilegios de ingresar ciertos valores en una tabla
+    # Cómo obtener el "dado un parquímetro"
+
+# Asumimos patentes cargadas en la base de dato para hacer multas
