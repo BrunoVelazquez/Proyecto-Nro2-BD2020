@@ -289,7 +289,16 @@ CREATE TABLE multa
     CREATE USER 'inspector'@'%' IDENTIFIED BY 'inspector';
 
     # Otorgamiento de privilegios:
-        # validación de números de legajo y password de un inspector
-        # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
+        
         # Carga de multas
+
+    GRANT INSERT PRIVILEGES ON parquimetros.multa TO 'inspector'@'%';
+
         # Registrar accesos a parquímetros.
+
+    GRANT INSERT PRIVILEGES ON parquimetros.parquimetros TO 'inspector'@'%';
+
+        # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
+
+        # Validación de números de legajo y password de un inspector
+
