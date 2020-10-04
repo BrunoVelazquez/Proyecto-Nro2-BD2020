@@ -126,7 +126,7 @@ CREATE TABLE parquimetros
     CONSTRAINT fk_parquimetros_altura
     FOREIGN KEY (altura) REFERENCES ubicaciones(altura)
         ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB
+) ENGINE=InnoDB;
 
 CREATE TABLE estacionamientos
 (
@@ -154,7 +154,7 @@ CREATE TABLE estacionamientos
     CONSTRAINT fk_estacionamientos_parquimetros
     FOREIGN KEY (id_parq) REFERENCES parquimetros(id_parq)
         ON DELETE RESTRICT ON UPDATE RESTRICT
-)
+) ENGINE=InnoDB;
 
 CREATE TABLE accede
 (
@@ -179,7 +179,7 @@ CREATE TABLE accede
     CONSTRAINT fk_accede_parquimetros
     FOREIGN KEY (id_parq) REFERENCES parquimetros(id_parq)
         ON DELETE RESTRICT ON UPDATE RESTRICT
-)
+) ENGINE=InnoDB;
 
 CREATE TABLE asociado_con
 (
@@ -204,7 +204,7 @@ CREATE TABLE asociado_con
     CONSTRAINT fk_asociado_con_altura
     FOREIGN KEY (altura) REFERENCES ubicaciones(altura)
         ON DELETE RESTRICT ON UPDATE RESTRICT
-)
+) ENGINE=InnoDB;
 
 CREATE TABLE multa
 (
@@ -224,7 +224,7 @@ CREATE TABLE multa
     CONSTRAINT fk_multa_asociado_con
     FOREIGN KEY (id_asociado_con) REFERENCES asociado_con(id_asociado_con)
         ON DELETE RESTRICT ON UPDATE RESTRICT
-)
+) ENGINE=InnoDB;
 
 #------------------------------------------------------------------
 
