@@ -186,7 +186,7 @@ CREATE TABLE asociado_con
     id_asociado_con INT UNSIGNED NOT NULL,
     legajo INT UNSIGNED NOT NULL,
     calle VARCHAR(45) NOT NULL,
-    alura INT UNSIGNED NOT NULL,
+    altura INT UNSIGNED NOT NULL,
     dia ENUM ('Lu','Ma','Mi','Ju','Vi','Sa','Do'),
     turno ENUM ('M','T'),
 
