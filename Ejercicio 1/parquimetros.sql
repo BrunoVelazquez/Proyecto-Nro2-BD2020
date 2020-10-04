@@ -96,7 +96,7 @@ CREATE TABLE inspectores
 CREATE TABLE ubicaciones
 (
     calle VARCHAR(45) NOT NULL,
-    alura INT UNSIGNED NOT NULL,
+    altura INT UNSIGNED NOT NULL,
     tarifa FLOAT(5,2) NOT NULL,
 
     CONSTRAINT check_tarifa 
@@ -114,7 +114,7 @@ CREATE TABLE parquimetros
     id_parq INT UNSIGNED NOT NULL,
     numero INT UNSIGNED,
     calle VARCHAR(45) NOT NULL,
-    alura INT UNSIGNED NOT NULL,
+    altura INT UNSIGNED NOT NULL,
 
     CONSTRAINT pk_parquimetros
     PRIMARY KEY (id_parq),
