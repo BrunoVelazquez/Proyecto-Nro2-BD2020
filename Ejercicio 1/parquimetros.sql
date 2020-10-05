@@ -306,7 +306,7 @@ CREATE TABLE multa
 
         # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
 	
-	
+	GRANT SELECT PRIVILEGES ON parquimetros.parquimetros TO 'inspector'@'%';
 	
         # Validación de números de legajo y password de un inspector
 		
