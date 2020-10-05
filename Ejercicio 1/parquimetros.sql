@@ -37,9 +37,9 @@ CREATE TABLE conductores
 CREATE TABLE automoviles
 (
     patente VARCHAR(6) NOT NULL,
-    marca VARCHAR(45),
-    modelo VARCHAR(45),
-    color VARCHAR(45),
+    marca VARCHAR(45) NOT NULL,
+    modelo VARCHAR(45) NOT NULL,
+    color VARCHAR(45) NOT NULL,
     dni INT UNSIGNED NOT NULL,
 
     CONSTRAINT pk_automoviles
@@ -53,7 +53,7 @@ CREATE TABLE automoviles
 CREATE TABLE tipos_tarjeta
 (
     tipo VARCHAR(45) NOT NULL,
-    descuento DECIMAL(3,2) NOT NULL DEFAULT 0,
+    descuento DECIMAL(3,2) UNSIGNED NOT NULL DEFAULT 0,
 
     CONSTRAINT check_descuento 
     CHECK (descuento <= 1 AND descuento >= 0),
@@ -62,10 +62,10 @@ CREATE TABLE tipos_tarjeta
     PRIMARY KEY (tipo)
 ) ENGINE=InnoDB;
 
-CREATE TABLE tarjeta
+CREATE TABLE tarjetas
 (
-    id_tarjeta INT UNSIGNED NOT NULL,
-    saldo FLOAT(5,2) NOT NULL DEFAULT 0,
+    id_tarjeta INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    saldo DECIMAL(5,2) NOT NULL DEFAULT 0,
     tipo VARCHAR(45) NOT NULL,
     patente VARCHAR(6) NOT NULL,
 
@@ -87,7 +87,7 @@ CREATE TABLE inspectores
     dni INT UNSIGNED NOT NULL,
     nombre VARCHAR(45) NOT NULL,
     apellido VARCHAR(45) NOT NULL,
-    password CHAR(32), # Usando MD5
+    password CHAR(32) NOT NULL, # Usando MD5
 
     CONSTRAINT pk_inspectores
     PRIMARY KEY (legajo)
@@ -97,7 +97,7 @@ CREATE TABLE ubicaciones
 (
     calle VARCHAR(45) NOT NULL,
     altura INT UNSIGNED NOT NULL,
-    tarifa FLOAT(5,2) NOT NULL,
+    tarifa DECIMAL(5,2) UNSIGNED NOT NULL,
 
     CONSTRAINT check_tarifa 
     CHECK (tarifa > 0),
@@ -109,7 +109,7 @@ CREATE TABLE ubicaciones
 CREATE TABLE parquimetros
 (
     id_parq INT UNSIGNED NOT NULL,
-    numero INT UNSIGNED,
+    numero INT UNSIGNED NOT NULL,
     calle VARCHAR(45) NOT NULL,
     altura INT UNSIGNED NOT NULL,
 
@@ -139,7 +139,7 @@ CREATE TABLE estacionamientos
     PRIMARY KEY (id_parq,fecha_ent,hora_ent),
 
     CONSTRAINT fk_estacionamientos_tarjeta
-    FOREIGN KEY (id_tarjeta) REFERENCES tarjeta(id_tarjeta)
+    FOREIGN KEY (id_tarjeta) REFERENCES tarjetas(id_tarjeta)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
 
     CONSTRAINT fk_estacionamientos_parquimetros
@@ -168,12 +168,12 @@ CREATE TABLE accede
 
 CREATE TABLE asociado_con
 (
-    id_asociado_con INT UNSIGNED NOT NULL,
+    id_asociado_con INT UNSIGNED NOT NULL AUTO_INCREMENT,
     legajo INT UNSIGNED NOT NULL,
     calle VARCHAR(45) NOT NULL,
     altura INT UNSIGNED NOT NULL,
-    dia ENUM ('Lu','Ma','Mi','Ju','Vi','Sa','Do'),
-    turno ENUM ('M','T'),
+    dia ENUM ('do','lu','ma','mi','ju','vi','sa') NOT NULL,
+    turno ENUM ('M','T') NOT NULL,
 
     CONSTRAINT pk_asociado_con
     PRIMARY KEY (id_asociado_con),
@@ -193,7 +193,7 @@ CREATE TABLE asociado_con
 
 CREATE TABLE multa
 (
-    numero INT UNSIGNED NOT NULL,
+    numero INT UNSIGNED NOT NULL AUTO_INCREMENT,
     patente VARCHAR(6) NOT NULL,
     id_asociado_con INT UNSIGNED NOT NULL,
     fecha DATE NOT NULL,
@@ -234,7 +234,7 @@ CREATE TABLE multa
                 parquimetros P
         ) Est_ab_parq
         NATURAL JOIN
-        tarjeta T
+        tarjetas T
     GROUP BY Est_ab_parq.calle, Est_ab_parq.altura;
 
 #------------------------------------------------------------------
@@ -263,9 +263,9 @@ CREATE TABLE multa
 
     # Otorgamiento de privilegios:
         # Adición de nuevas tarjetas, de cualquier tipo y con saldo inicial
-        # Otorgamiento de acceso a la tabla Tarjeta de DB
+        # Otorgamiento de acceso a la tabla Tarjetas de DB
          
-    GRANT INSERT ON parquimetros.tarjeta TO 'venta'@'%';
+    GRANT INSERT ON parquimetros.tarjetas TO 'venta'@'%';
     GRANT SELECT ON parquimetros.tipos_tarjeta TO 'venta'@'%';
     
 # Creación del usuario inspector
