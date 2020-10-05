@@ -31,7 +31,7 @@ CREATE TABLE conductores
     registro INT UNSIGNED NOT NULL,
 
     CONSTRAINT pk_conductores
-    PRIMARY KEY (dni),
+    PRIMARY KEY (dni)
 ) ENGINE=InnoDB;
 
 CREATE TABLE automoviles
@@ -102,11 +102,8 @@ CREATE TABLE ubicaciones
     CONSTRAINT check_tarifa 
     CHECK (tarifa > 0),
 
-    CONSTRAINT pk_ubicaciones_calle
-    PRIMARY KEY (calle),
-
-    CONSTRAINT pk_ubicaciones_altura
-    PRIMARY KEY (altura)
+    CONSTRAINT pk_ubicaciones_calle_altura
+    PRIMARY KEY (calle,altura)
 ) ENGINE=InnoDB;
 
 CREATE TABLE parquimetros
@@ -119,13 +116,13 @@ CREATE TABLE parquimetros
     CONSTRAINT pk_parquimetros
     PRIMARY KEY (id_parq),
 
-    CONSTRAINT fk_parquimetros_calle
-    FOREIGN KEY (calle) REFERENCES ubicaciones(calle)
-        ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_parquimetros_calle_altura
+    FOREIGN KEY (calle,altura) REFERENCES ubicaciones (calle,altura)
+        ON DELETE RESTRICT ON UPDATE RESTRICT#,
 
-    CONSTRAINT fk_parquimetros_altura
-    FOREIGN KEY (altura) REFERENCES ubicaciones(altura)
-        ON DELETE RESTRICT ON UPDATE RESTRICT
+    #CONSTRAINT fk_parquimetros_altura
+    #FOREIGN KEY (altura) REFERENCES ubicaciones (altura)
+     #   ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE estacionamientos
@@ -138,14 +135,8 @@ CREATE TABLE estacionamientos
     hora_sal TIME,
 
 
-    CONSTRAINT pk_estacionamientos_id_parq
-    PRIMARY KEY (id_parq),
-
-    CONSTRAINT pk_estacionamientos_fecha_ent
-    PRIMARY KEY (fecha_ent),
-
-    CONSTRAINT pk_estacionamientos_hora_ent
-    PRIMARY KEY (hora_ent),
+    CONSTRAINT pk_estacionamientos_id_parq_fecha_ent_hora_ent
+    PRIMARY KEY (id_parq,fecha_ent,hora_ent),
 
     CONSTRAINT fk_estacionamientos_tarjeta
     FOREIGN KEY (id_tarjeta) REFERENCES tarjeta(id_tarjeta)
@@ -163,14 +154,8 @@ CREATE TABLE accede
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
 
-    CONSTRAINT pk_accede_id_parq
-    PRIMARY KEY (id_parq),
-
-    CONSTRAINT pk_accede_fecha
-    PRIMARY KEY (fecha),
-
-    CONSTRAINT pk_accede_hora
-    PRIMARY KEY (hora),
+    CONSTRAINT pk_accede_id_parq_fecha_hora
+    PRIMARY KEY (id_parq,fecha,hora),
 
     CONSTRAINT fk_accede_inspectores
     FOREIGN KEY (legajo) REFERENCES inspectores(legajo)
@@ -197,13 +182,13 @@ CREATE TABLE asociado_con
     FOREIGN KEY (legajo) REFERENCES inspectores(legajo)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
 
-    CONSTRAINT fk_asociado_con_calle
-    FOREIGN KEY (calle) REFERENCES ubicaciones(calle)
-        ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_asociado_con_calle_altura
+    FOREIGN KEY (calle,altura) REFERENCES ubicaciones(calle,altura)
+        ON DELETE RESTRICT ON UPDATE RESTRICT#,
 
-    CONSTRAINT fk_asociado_con_altura
-    FOREIGN KEY (altura) REFERENCES ubicaciones(altura)
-        ON DELETE RESTRICT ON UPDATE RESTRICT
+#    CONSTRAINT fk_asociado_con_altura
+#    FOREIGN KEY (altura) REFERENCES ubicaciones(altura)
+#        ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE multa
@@ -278,10 +263,10 @@ CREATE TABLE multa
 
     # Otorgamiento de privilegios:
         # Adición de nuevas tarjetas, de cualquier tipo y con saldo inicial
-    # Otorgamiento de acceso a la tabla Tarjeta de DB
+        # Otorgamiento de acceso a la tabla Tarjeta de DB
          
-    GRANT INSERT PRIVILEGES ON parquimetros.tarjeta TO 'venta'@'%';
-    GRANT SELECT PRIVILEGES ON parquimetros.tipos_tarjeta TO 'venta'@'%';
+    GRANT INSERT ON parquimetros.tarjeta TO 'venta'@'%';
+    GRANT SELECT ON parquimetros.tipos_tarjeta TO 'venta'@'%';
     
 # Creación del usuario inspector
     # Nombre: inspector
@@ -294,23 +279,23 @@ CREATE TABLE multa
 
         # Acceso a la tabla estacionados
 
-    GRANT SELECT PRIVILEGES ON parquimetros.estacionados TO 'inspector'@'%';
+    GRANT SELECT ON parquimetros.estacionados TO 'inspector'@'%';
 
         # Carga de multas
 
-    GRANT INSERT PRIVILEGES ON parquimetros.multa TO 'inspector'@'%';
+    GRANT INSERT ON parquimetros.multa TO 'inspector'@'%';
 
         # Registrar accesos a parquímetros.
 
-    GRANT INSERT PRIVILEGES ON parquimetros.parquimetros TO 'inspector'@'%';
+    GRANT INSERT ON parquimetros.parquimetros TO 'inspector'@'%';
 
         # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
 	
-	GRANT SELECT PRIVILEGES ON parquimetros.parquimetros TO 'inspector'@'%';
+	GRANT SELECT ON parquimetros.parquimetros TO 'inspector'@'%';
 	
         # Validación de números de legajo y password de un inspector
 		
-	GRANT SELECT PRIVILEGES ON parquimetros.inspectores TO 'inspector'@'%'; #DUDA
+	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%'; #DUDA
 
     
 # Preguntas
