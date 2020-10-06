@@ -283,7 +283,7 @@ CREATE TABLE multa
 
         # Carga de multas
 
-    GRANT INSERT ON parquimetros.multa TO 'inspector'@'%';
+    GRANT INSERT, SELECT ON parquimetros.multa TO 'inspector'@'%';
 
         # Registrar accesos a parquímetros.
 
