@@ -288,6 +288,7 @@ CREATE TABLE multa
         # Registrar accesos a parquímetros.
 
     GRANT INSERT ON parquimetros.parquimetros TO 'inspector'@'%';
+    GRANT INSERT ON parquimetros.accede TO 'inspector'@'%';
 
         # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
 	
