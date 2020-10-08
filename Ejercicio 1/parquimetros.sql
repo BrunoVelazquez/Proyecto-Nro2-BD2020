@@ -207,7 +207,7 @@ CREATE TABLE multa
 
 # Creación de vistas
     # Nombre: estacionados
-    # Contiene la información de cada ubicación en la siguiente manera:
+    # Contiene la información de cada ubicación de la siguiente manera:
         # Calle y altura de la ubicación
         # Patente de todos los autos que tienen un estacionamiento abierto en dicha ubicación.
 
@@ -231,7 +231,7 @@ CREATE TABLE multa
 
 #------------------------------------------------------------------
 
-# Creación de usuario y otorgamiento de privelgios
+# Creación de usuario y otorgamiento de privilegios
 
 # Creación del usuario admin
     # Nombre: admin
@@ -263,7 +263,7 @@ CREATE TABLE multa
 # Creación del usuario inspector
     # Nombre: inspector
     # Accesible desde cualquier computadora conectada al servidor
-    # Contraseña del usuario: ispector
+    # Contraseña del usuario: inspector
 
     CREATE USER 'inspector'@'%' IDENTIFIED BY 'inspector';
 
@@ -289,4 +289,4 @@ CREATE TABLE multa
 		
 	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';
 
-# Asumimos patentes cargadas en la base de dato para hacer multas y nuevas tarjetas
+# Asumimos patentes cargadas en la base de datos para hacer multas y nuevas tarjetas
