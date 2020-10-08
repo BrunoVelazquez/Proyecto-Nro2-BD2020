@@ -281,12 +281,12 @@ CREATE TABLE multa
 
     GRANT INSERT ON parquimetros.accede TO 'inspector'@'%';
 
-        # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
+        # Dado un parquímetro: la obtención de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
 	
 	GRANT SELECT ON parquimetros.parquimetros TO 'inspector'@'%';
 	
         # Validación de números de legajo y password de un inspector
 		
-	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';    #Consultar si hay que dar privilegio de lectura en toda la tabla o solo el legajo y password
+	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';
 
-# Asumimos patentes cargadas en la base de dato para hacer multas
+# Asumimos patentes cargadas en la base de dato para hacer multas y nuevas tarjetas
