@@ -72,13 +72,13 @@ CREATE TABLE tarjetas
     CONSTRAINT pk_tarjeta
     PRIMARY KEY (id_tarjeta),
 
-    CONSTRAINT fk_tarjeta_tipos_tarjeta
+    CONSTRAINT fk_tarjetas_tipos_tarjeta
     FOREIGN KEY (tipo) REFERENCES tipos_tarjeta(tipo)
-        ON DELETE RESTRICT ON UPDATE CASCADE,
+        ON DELETE RESTRICT ON UPDATE RESTRICT,
 
-    CONSTRAINT fk_tarjeta_automoviles
+    CONSTRAINT fk_tarjetas_automoviles
     FOREIGN KEY (patente) REFERENCES automoviles(patente)
-        ON DELETE RESTRICT ON UPDATE CASCADE
+        ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE inspectores
@@ -102,7 +102,7 @@ CREATE TABLE ubicaciones
     CONSTRAINT check_tarifa 
     CHECK (tarifa > 0),
 
-    CONSTRAINT pk_ubicaciones_calle_altura
+    CONSTRAINT pk_ubicaciones
     PRIMARY KEY (calle,altura)
 ) ENGINE=InnoDB;
 
@@ -116,13 +116,9 @@ CREATE TABLE parquimetros
     CONSTRAINT pk_parquimetros
     PRIMARY KEY (id_parq),
 
-    CONSTRAINT fk_parquimetros_calle_altura
+    CONSTRAINT fk_parquimetros_ubicaciones
     FOREIGN KEY (calle,altura) REFERENCES ubicaciones (calle,altura)
-        ON DELETE RESTRICT ON UPDATE RESTRICT#,
-
-    #CONSTRAINT fk_parquimetros_altura
-    #FOREIGN KEY (altura) REFERENCES ubicaciones (altura)
-     #   ON DELETE RESTRICT ON UPDATE RESTRICT
+        ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE estacionamientos
@@ -135,10 +131,10 @@ CREATE TABLE estacionamientos
     hora_sal TIME,
 
 
-    CONSTRAINT pk_estacionamientos_id_parq_fecha_ent_hora_ent
+    CONSTRAINT pk_estacionamientos
     PRIMARY KEY (id_parq,fecha_ent,hora_ent),
 
-    CONSTRAINT fk_estacionamientos_tarjeta
+    CONSTRAINT fk_estacionamientos_tarjetas
     FOREIGN KEY (id_tarjeta) REFERENCES tarjetas(id_tarjeta)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
 
@@ -154,7 +150,7 @@ CREATE TABLE accede
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
 
-    CONSTRAINT pk_accede_id_parq_fecha_hora
+    CONSTRAINT pk_accede
     PRIMARY KEY (id_parq,fecha,hora),
 
     CONSTRAINT fk_accede_inspectores
@@ -182,13 +178,9 @@ CREATE TABLE asociado_con
     FOREIGN KEY (legajo) REFERENCES inspectores(legajo)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
 
-    CONSTRAINT fk_asociado_con_calle_altura
+    CONSTRAINT fk_asociado_con_ubicaciones
     FOREIGN KEY (calle,altura) REFERENCES ubicaciones(calle,altura)
-        ON DELETE RESTRICT ON UPDATE RESTRICT#,
-
-#    CONSTRAINT fk_asociado_con_altura
-#    FOREIGN KEY (altura) REFERENCES ubicaciones(altura)
-#        ON DELETE RESTRICT ON UPDATE RESTRICT
+        ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE multa
@@ -202,7 +194,7 @@ CREATE TABLE multa
     CONSTRAINT pk_multa
     PRIMARY KEY (numero),
 
-    CONSTRAINT fk_multa_patente
+    CONSTRAINT fk_multa_automoviles
     FOREIGN KEY (patente) REFERENCES automoviles(patente)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
 
@@ -233,9 +225,9 @@ CREATE TABLE multa
                 NATURAL JOIN
                 parquimetros P
         ) Est_ab_parq
-        NATURAL JOIN
+        NATURAL JOIN    
         tarjetas T
-    GROUP BY Est_ab_parq.calle, Est_ab_parq.altura;
+    ORDER BY Est_ab_parq.calle, Est_ab_parq.altura;
 
 #------------------------------------------------------------------
 
@@ -287,7 +279,7 @@ CREATE TABLE multa
 
         # Registrar accesos a parquímetros.
 
-    GRANT INSERT ON parquimetros.parquimetros TO 'inspector'@'%';
+    GRANT INSERT ON parquimetros.parquimetros TO 'inspector'@'%'; #Realmente necesario?
     GRANT INSERT ON parquimetros.accede TO 'inspector'@'%';
 
         # Dado un parquímetro: la obteción de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
@@ -296,11 +288,6 @@ CREATE TABLE multa
 	
         # Validación de números de legajo y password de un inspector
 		
-	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%'; #DUDA
-
-    
-# Preguntas
-    # Cómo dar privilegios de ingresar ciertos valores en una tabla
-    # Cómo obtener el "dado un parquímetro"
+	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';    #Consultar si hay que dar privilegio de lectura en toda la tabla o solo el legajo y password
 
 # Asumimos patentes cargadas en la base de dato para hacer multas
