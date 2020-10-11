@@ -1,10 +1,10 @@
-import java.sql.*;
+import java.sql.*; //no se si va
 
 public class Ejercicio2 {
 	//Urls ya definidas
-	String urlAdmin = "jdbc:mysql://localhost:3306/parquimetros?serverTimezone=America/Argentina/Buenos_Aires";
-	String urlVenta = "falta definir el %, como se pone ?";
-	String urlInspector = "falta definir el %, como se pone ?";
+	String urlAdmin = "jdbc:mysql://localhost:3306/parquimetros?user=admin&password=admin";
+	String urlVenta = "jdbc:mysql://%:3306/parquimetros?user=venta&password=venta";   //puede estar mal el % y puede faltar el timezone
+	String urlInspector = "jdbc:mysql://%:3306/parquimetros?user=inspector&password=inspector"; //puede estar mal el % y puede faltar el timezone
 	
 	//Conexion
 	java.sql.Connection cnx;
