@@ -290,3 +290,10 @@ CREATE TABLE multa
 	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';
 
 # Asumimos patentes cargadas en la base de datos para hacer multas y nuevas tarjetas
+
+#------------------------------------------------------------------
+
+    # Corrección observaciones de Ejercicio 1
+    
+    GRANT SELECT ON parquimetros.asociado_con TO 'inspector'@'%';
+
