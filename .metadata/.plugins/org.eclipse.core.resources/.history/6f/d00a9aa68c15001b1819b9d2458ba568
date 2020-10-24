@@ -1,0 +1,64 @@
+import java.util.Scanner;
+
+public class Ejercicio2 {
+	
+	public static void main(String args[]) {
+		//Urls
+		String urlAdmin = "jdbc:mysql://localhost:3306/parquimetros?user=admin&password=admin";
+		String urlVenta = "jdbc:mysql://%:3306/parquimetros?user=venta&password=venta";   //puede estar mal el % y puede faltar el timezone
+		String urlInspector = "jdbc:mysql://%:3306/parquimetros?user=inspector&password=inspector"; //puede estar mal el % y puede faltar el timezone
+		
+		//Declaramos la conexion y el statement
+		java.sql.Connection cnx;
+		java.sql.Statement statement;
+		try {
+			//Creamos la conexion y el statement
+			cnx = java.sql.DriverManager.getConnection(urlAdmin);
+			statement = cnx.createStatement();
+		
+			//Realizamos las operaciones
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("1 - Actualización sobre la base de datos.");
+			System.out.println("2 - Consulta sobre la base de datos.");
+			System.out.println("Ingrese su operacion a realizar:");
+			int opcion = scanner.nextInt();
+			switch(opcion) {
+				case 1: //ACTUALIZACION DE LA BASE DE DATOS
+					System.out.println("Ingrese la actualización a realizar:");
+					String actualizacion = scanner.nextLine();
+					statement.executeUpdate(actualizacion);
+					
+					
+					
+					break;
+				case 2: //CONSULTA DE LA BASE DE DATOS
+					System.out.println("Ingrese la consulta a realizar:");
+					String consulta = scanner.nextLine();
+					java.sql.ResultSet resultado = statement.executeQuery(consulta);
+					
+					
+					resultado.close();
+					break;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			resultado.close(); //esto solo iria en el case 2
+			statement.close();
+			
+		} catch(java.sql.SQLException ex) {
+			System.out.println("SQLException: " +ex.getMessage());
+			System.out.println("SQLState: " +ex.getSQLState());
+			System.out.println("VendorError: " +ex.getErrorCode());
+		}	
+	} //Fin del metodo main
+}
