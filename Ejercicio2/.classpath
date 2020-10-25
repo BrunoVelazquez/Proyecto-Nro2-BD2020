@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/rodri/Desktop/ejemplo java-MySQL/mysql-connector-java-8.0.21.jar"/>
-	<classpathentry kind="lib" path="C:/Users/rodri/Desktop/ejemplo java-MySQL/quicktable-3.0.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-8.0.21.jar"/>
+	<classpathentry kind="lib" path="quicktable-3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
