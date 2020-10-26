@@ -1,10 +1,11 @@
 import java.sql.*;
 import java.util.Vector;
-
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class VentanaTablas extends JFrame {
 	
@@ -14,7 +15,8 @@ public class VentanaTablas extends JFrame {
 	public VentanaTablas() {
 		//Inicializo el componente visual y conecto a la BD
 		this.setVisible(true);
-		this.setSize(200, 300);
+		this.setSize(300, 300);
+		this.setTitle("Tablas de la BD:");
 		conectarBD();
 		
 		//Armo la lista
@@ -24,15 +26,30 @@ public class VentanaTablas extends JFrame {
 			Vector<String> elementos = new Vector<String>();
 			while (rs.next()) {
 				elementos.add(rs.getString(1));
-				System.out.println(rs.getString(1));
 			}  
 			JList<String> listaTablas = new JList<String>(elementos);
 			JScrollPane listaTablasScrolleable = new JScrollPane(listaTablas);
 			this.add(listaTablasScrolleable);
+			listaTablas.setSelectedIndex(0);
+			
+			//hago que la lista sea clickeable
+			listaTablas.addMouseListener(new MouseAdapter() {
+			    public void mouseClicked(MouseEvent evt) {
+			        JList list = (JList)evt.getSource();
+			        if (evt.getClickCount() == 1) {
+			            // Accion al clickear
+			            int index = list.locationToIndex(evt.getPoint()); // Indice seleccionado
+			            VentanaDescribe ven = new VentanaDescribe(listaTablas.getSelectedValue()); // Popup describe tabla seleccionada
+			        } 
+			    }
+			});
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		//Genera un popup con el describe de la tabla inspectores
+		VentanaDescribe ventanaAux = new VentanaDescribe("accede");
 	}
 	
 	private void conectarBD()
@@ -63,4 +80,5 @@ public class VentanaTablas extends JFrame {
 	         }
 	      }
 	   }
+
 }

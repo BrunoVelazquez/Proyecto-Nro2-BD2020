@@ -1,0 +1,94 @@
+import java.awt.BorderLayout;
+import java.sql.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import quick.dbtable.DBTable;
+
+public class VentanaDescribe extends JFrame {
+	
+	private DBTable tabla; 
+	
+	
+	public VentanaDescribe(String nombreTabla) {
+		//Creo la tabla donde se mostrara el describe
+		tabla = new DBTable();
+				
+		//Inicializo el componente visual y conecto la DBTable a la BD
+		this.setVisible(true);
+		this.setSize(400, 400);
+		setLocationRelativeTo(null);
+		conectarBD();
+		
+		try {
+			//Armo la tabla
+			tabla.setSelectSql("DESCRIBE " +nombreTabla);
+		
+			//Se da el formato a la tabla
+			tabla.createColumnModelFromQuery();    	    
+			for (int i = 0; i < tabla.getColumnCount(); i++)
+			{ // para que muestre correctamente los valores de tipo TIME (hora)  		   		  
+				if	 (tabla.getColumn(i).getType()==Types.TIME)  
+				{    		 
+					tabla.getColumn(i).setType(Types.CHAR);  
+				}
+				// cambiar el formato en que se muestran los valores de tipo DATE
+				if	 (tabla.getColumn(i).getType()==Types.DATE)
+				{
+					tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
+				}
+			}  
+			// actualizamos el contenido de la tabla.   	     	  
+			tabla.refresh();
+		} catch (SQLException ex) {
+	         // en caso de error, se muestra la causa en la consola
+	         System.out.println("SQLException: " + ex.getMessage());
+	         System.out.println("SQLState: " + ex.getSQLState());
+	         System.out.println("VendorError: " + ex.getErrorCode());
+	         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+	                                       ex.getMessage() + "\n", 
+	                                       "Error al ejecutar la consulta.",
+	                                       JOptionPane.ERROR_MESSAGE);	         
+	      }
+		
+		// Agrega la tabla al frame (no necesita JScrollPane como Jtable)
+        getContentPane().add(tabla, BorderLayout.CENTER);           
+                  
+       // setea la tabla para sólo lectura (no se puede editar su contenido)  
+       tabla.setEditable(false);
+	}
+	
+	private void conectarBD()
+	   {
+	         try
+	         {
+	            String driver ="com.mysql.cj.jdbc.Driver";
+	        	String servidor = "localhost:3306";
+	        	String baseDatos = "parquimetros"; 
+	        	String usuario = "admin";
+	        	String clave = "admin";
+	            String uriConexion = "jdbc:mysql://" + servidor + "/" + 
+	        	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
+	   
+	       //establece una conexión con la  B.D. "parquimetros"  usando directamante una tabla DBTable    
+	            tabla.connectDatabase(driver, uriConexion, usuario, clave);
+	           
+	         }
+	         catch (SQLException ex)
+	         {
+	            JOptionPane.showMessageDialog(this,
+	                           "Se produjo un error al intentar conectarse a la base de datos.\n" 
+	                            + ex.getMessage(),
+	                            "Error",
+	                            JOptionPane.ERROR_MESSAGE);
+	            System.out.println("SQLException: " + ex.getMessage());
+	            System.out.println("SQLState: " + ex.getSQLState());
+	            System.out.println("VendorError: " + ex.getErrorCode());
+	         }
+	         catch (ClassNotFoundException e)
+	         {
+	            e.printStackTrace();
+	         }
+	      
+	   }
+}
