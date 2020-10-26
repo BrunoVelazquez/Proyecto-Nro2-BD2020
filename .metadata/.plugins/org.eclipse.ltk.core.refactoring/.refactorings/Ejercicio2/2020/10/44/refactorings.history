@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;logeoInspector&apos; to &apos;LogeoInspector&apos;&#x0D;&#x0A;- Original project: &apos;Ejercicio2&apos;&#x0D;&#x0A;- Original element: &apos;logeoInspector&apos;&#x0D;&#x0A;- Renamed element: &apos;LogeoInspector&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;logeoInspector&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;{logeoInspector.java[logeoInspector" matchStrategy="1" name="LogeoInspector" qualified="false" references="true" similarDeclarations="false" stamp="1603751032827" textual="false" version="1.0"/>
+</session>

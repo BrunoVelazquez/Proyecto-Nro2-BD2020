@@ -133,10 +133,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
    }
 
    private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
-//	      try {
-//	         this.ventanaConsultas.setMaximum(true);
-//	      } catch (PropertyVetoException e) {}
-//	      this.ventanaConsultas.setVisible(true);      
-	   }
+	   LogeoInspector login = new LogeoInspector();
+   }
    
 }
