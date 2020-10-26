@@ -1,0 +1,32 @@
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+
+public class VentanaTablas {
+
+	public static void main(String[] args) {
+
+		 String[] data = {"one", "two", "three", "four"};
+		 JList<String> listaTablas = new JList<String>(data);
+		 JFrame ventana = new JFrame("hola");
+		 JScrollPane listaTablasScrolleable = new JScrollPane(listaTablas);
+		 ventana.setVisible(true);
+		 ventana.setSize(800, 600);
+		 ventana.add(listaTablasScrolleable);
+
+		 DatabaseMetaData md = conn.getMetaData();
+		 ResultSet rs = md.getTables(null, null, "%", null);
+		 while (rs.next()) {
+		   System.out.println(rs.getString(3));
+		 }
+		 
+		 Vector<String> elements = new Vector<String>();
+		 while (query.next()) {
+		     // or whatever is appropriate
+		     elements.add(query.getString("name"));
+		 }  
+		 Jlist mylist = new Jlist(elements);
+
+	}
+
+}

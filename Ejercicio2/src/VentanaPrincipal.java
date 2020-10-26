@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -59,10 +60,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
       this.ventanaConsultas = new VentanaConsultas();
       this.ventanaConsultas.setVisible(false);
       this.jDesktopPane1.add(this.ventanaConsultas);
-      
-      this.ventanaTablas = new VentanaTablas();
-//      this.ventanaTablas.setVisible(false);
-//      this.jDesktopPane1.add(this.ventanaTablas);
+
    }
    
    private void initGUI() 
@@ -131,6 +129,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
          this.ventanaConsultas.setMaximum(true);
       } catch (PropertyVetoException e) {}
       this.ventanaConsultas.setVisible(true);      
+      ventanaTablas = new VentanaTablas();    
    }
 
    private void mniUnidadPersonalActionPerformed(ActionEvent evt) {

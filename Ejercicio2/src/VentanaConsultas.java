@@ -144,7 +144,7 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
             String uriConexion = "jdbc:mysql://" + servidor + "/" + 
         	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
    
-       //establece una conexión con la  B.D. "batallas"  usando directamante una tabla DBTable    
+       //establece una conexión con la  B.D. "parquimetros"  usando directamante una tabla DBTable    
             tabla.connectDatabase(driver, uriConexion, usuario, clave);
            
          }
@@ -225,6 +225,5 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
       }
       
    }
-
    
 }
