@@ -1,0 +1,126 @@
+import java.awt.BorderLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
+
+
+@SuppressWarnings("serial")
+public class VentanaPrincipal extends javax.swing.JFrame 
+{
+
+   private VentanaConsultas ventanaConsultas;
+   private VentanaTablas ventanaTablas;
+
+   private JDesktopPane jDesktopPane1;
+   private JMenuBar jMenuBar1;
+   private JMenuItem mniConsultas;
+   private JMenu menuAdmin;
+
+   /**
+   * Auto-generated main method to display this JFrame
+   */
+   public static void main(String[] args) 
+   {
+      SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            VentanaPrincipal inst = new VentanaPrincipal();
+            inst.setLocationRelativeTo(null);
+            inst.setVisible(true);
+         }
+      });
+   }
+   
+   public VentanaPrincipal() 
+   {
+      super();
+
+      initGUI();
+
+      
+      this.ventanaConsultas = new VentanaConsultas();
+      this.ventanaConsultas.setVisible(false);
+      this.jDesktopPane1.add(this.ventanaConsultas);
+      
+      this.ventanaTablas = new VentanaTablas();
+      this.ventanaTablas.setVisible(false);
+      this.jDesktopPane1.add(this.ventanaTablas);
+   }
+   
+   private void initGUI() 
+   {
+      try 
+      {
+         javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+      } 
+      catch(Exception e) 
+      {
+         e.printStackTrace();
+      }
+      
+      try {
+         {
+            this.setTitle("Ejercicio numero 2");
+            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+         }
+         {
+            jDesktopPane1 = new JDesktopPane();
+            getContentPane().add(jDesktopPane1, BorderLayout.CENTER);
+            jDesktopPane1.setPreferredSize(new java.awt.Dimension(800, 600));
+         }
+         {
+            jMenuBar1 = new JMenuBar();
+            setJMenuBar(jMenuBar1);
+            {
+            	menuAdmin = new JMenu();
+               jMenuBar1.add(menuAdmin);
+               menuAdmin.setText("Admin");
+               {
+                  mniConsultas = new JMenuItem();
+                  menuAdmin.add(mniConsultas);
+                  mniConsultas.setText("Consultas (Utilizando DBTable)");
+                  mniConsultas.addActionListener(new ActionListener() {
+                     public void actionPerformed(ActionEvent evt) {
+                        mniConsultasActionPerformed(evt);
+                     }
+                  });
+               }
+            }
+         }
+         this.setSize(800, 600);
+         pack();
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+   
+   private void mniConsultasActionPerformed(ActionEvent evt) 
+   {
+      try
+      {
+         this.ventanaConsultas.setMaximum(true);
+      }
+      catch (PropertyVetoException e) {}
+      this.ventanaConsultas.setVisible(true);      
+   }
+
+   
+}

@@ -28,13 +28,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
 {
 
    private VentanaConsultas ventanaConsultas;
+   private VentanaTablas ventanaTablas;
 
    private JDesktopPane jDesktopPane1;
    private JMenuBar jMenuBar1;
-   private JMenuItem mniSalir;
-   private JSeparator jSeparator1;
-   private JMenuItem mniConsultas;
-   private JMenu mnuEjemplos;
+   private JMenuItem mniConsultas, mniUnidadPersonal;
+   private JMenu menuAdmin, menuInspector;
 
    /**
    * Auto-generated main method to display this JFrame
@@ -60,6 +59,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
       this.ventanaConsultas = new VentanaConsultas();
       this.ventanaConsultas.setVisible(false);
       this.jDesktopPane1.add(this.ventanaConsultas);
+      
+      this.ventanaTablas = new VentanaTablas();
+//      this.ventanaTablas.setVisible(false);
+//      this.jDesktopPane1.add(this.ventanaTablas);
    }
    
    private void initGUI() 
@@ -87,12 +90,16 @@ public class VentanaPrincipal extends javax.swing.JFrame
             jMenuBar1 = new JMenuBar();
             setJMenuBar(jMenuBar1);
             {
-               mnuEjemplos = new JMenu();
-               jMenuBar1.add(mnuEjemplos);
-               mnuEjemplos.setText("Ejemplos");
+            	menuAdmin = new JMenu();
+               jMenuBar1.add(menuAdmin);
+               menuAdmin.setText("Admin");
+               
+               menuInspector = new JMenu();
+               jMenuBar1.add(menuInspector);
+               menuInspector.setText("Inspector");
                {
                   mniConsultas = new JMenuItem();
-                  mnuEjemplos.add(mniConsultas);
+                  menuAdmin.add(mniConsultas);
                   mniConsultas.setText("Consultas (Utilizando DBTable)");
                   mniConsultas.addActionListener(new ActionListener() {
                      public void actionPerformed(ActionEvent evt) {
@@ -101,19 +108,15 @@ public class VentanaPrincipal extends javax.swing.JFrame
                   });
                }
                {
-                  jSeparator1 = new JSeparator();
-                  mnuEjemplos.add(jSeparator1);
-               }
-               {
-                  mniSalir = new JMenuItem();
-                  mnuEjemplos.add(mniSalir);
-                  mniSalir.setText("Salir");
-                  mniSalir.addActionListener(new ActionListener() {
-                     public void actionPerformed(ActionEvent evt) {
-                        mniSalirActionPerformed(evt);
-                     }
-                  });
-               }
+                   mniUnidadPersonal = new JMenuItem();
+                   menuInspector.add(mniUnidadPersonal);
+                   mniUnidadPersonal.setText("Unidad Personal");
+                   mniUnidadPersonal.addActionListener(new ActionListener() {
+                      public void actionPerformed(ActionEvent evt) {
+                         mniUnidadPersonalActionPerformed(evt);
+                      }
+                   });
+                }
             }
          }
          this.setSize(800, 600);
@@ -123,32 +126,18 @@ public class VentanaPrincipal extends javax.swing.JFrame
       }
    }
    
-   private void mniSalirActionPerformed(ActionEvent evt) 
-   {
-      this.dispose();
-   }
-   
-   private void mniConsultasActionPerformed(ActionEvent evt) 
-   {
-      try
-      {
+   private void mniConsultasActionPerformed(ActionEvent evt) {
+      try {
          this.ventanaConsultas.setMaximum(true);
-      }
-      catch (PropertyVetoException e) {}
+      } catch (PropertyVetoException e) {}
       this.ventanaConsultas.setVisible(true);      
    }
 
+   private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
+//	      try {
+//	         this.ventanaConsultas.setMaximum(true);
+//	      } catch (PropertyVetoException e) {}
+//	      this.ventanaConsultas.setVisible(true);      
+	   }
    
-   private void centrarDialogo(javax.swing.JDialog p_dialogo)
-   {
-     p_dialogo.setLocationRelativeTo(this);
-     p_dialogo.setLocationByPlatform(false);
-     int desplzX = (int) ((this.getSize().getWidth() / 2.0) - (p_dialogo.getSize().getWidth() / 2.0));
-     int desplzY = (int) ((this.getSize().getHeight() / 2.0) - (p_dialogo.getSize().getHeight() / 2.0));
-     p_dialogo.setLocation(new Point((int) this.getLocationOnScreen().getX() + desplzX,
-                                     (int) this.getLocationOnScreen().getY() + desplzY));
-
-   }   
-   
-
 }
