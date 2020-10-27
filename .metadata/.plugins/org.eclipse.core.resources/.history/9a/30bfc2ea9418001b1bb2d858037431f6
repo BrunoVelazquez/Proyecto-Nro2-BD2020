@@ -1,0 +1,120 @@
+import java.sql.*;
+import java.util.ArrayList;
+
+public class Logica {
+
+	private LogIn_Checker lic;
+	private Connection conexionBD;
+	private Statement stmt;
+	private PreparedStatement p_stmt;
+	
+	public Logica() {
+		lic = new LogIn_Checker();
+		conexionBD = null;
+		stmt = p_stmt = null;
+		new ArrayList<String>();
+		new ArrayList<String>();
+	}
+	
+	public void iniciar_sesion_admin(String clave) throws SQLException {
+		conexionBD = lic.chequear_conexion_admin(clave);
+	}
+	
+	public void iniciar_sesion_usuario_inspector() throws SQLException {
+		conexionBD = lic.iniciar_sesion_usuario_inspector();
+	}
+	
+	public String iniciar_sesion_inspector(int legajo, String contrasenia) throws SQLException {
+		
+		boolean coincide = false;
+		String sql = "select md5(?) as password";
+		String pass_md5 = "";
+		String toRet = "";
+		p_stmt = conexionBD.prepareStatement(sql);
+		p_stmt.setString(1,contrasenia);
+		ResultSet rs = p_stmt.executeQuery();
+		
+		while (rs.next())
+			pass_md5 = rs.getString("password");
+		
+		sql = "SELECT legajo, md5(password) as coded_pass,nombre,apellido "
+			+ "FROM inspectores "
+			+ "WHERE legajo = ?";
+		
+		p_stmt = conexionBD.prepareStatement(sql);
+		p_stmt.setInt(1,legajo);
+		rs = p_stmt.executeQuery();
+		
+		while (rs.next()) {
+			coincide = (rs.getInt("legajo") == legajo) && (rs.getString("coded_pass").equals(pass_md5));
+			toRet += rs.getString("nombre")+" "+rs.getString("apellido");
+		}
+		if (!coincide)
+			throw new SQLException("Datos incorrectos, vuelva a intentar.");
+		
+		rs.close();
+		p_stmt.close();
+		
+		return toRet;
+	}
+	
+	public ResultSet ejecutar_sentencia(String sql) throws SQLException {
+		
+		ResultSet toRet = null;
+		boolean es_consulta = false;
+		stmt = conexionBD.createStatement();
+		es_consulta = (boolean) stmt.execute(sql);
+			
+		if (es_consulta)
+			toRet = stmt.getResultSet();
+		
+		return toRet;
+	}
+	
+	public void cerrar_sentencia() {
+		try {
+			this.stmt.close();
+		} catch (SQLException e) {}
+	}
+	
+	public ArrayList<String> get_tablas(){
+		
+		ArrayList<String> toRet = new ArrayList<String>();
+		String sql = "show tables";
+		String nombre = "";
+		Statement stmt = null;
+		
+		try {
+			stmt = conexionBD.createStatement();
+			ResultSet tablas_aux = stmt.executeQuery(sql);
+			
+			while(tablas_aux.next()) {
+				nombre = tablas_aux.getString(1);
+				toRet.add(nombre);
+			}
+			tablas_aux.close();
+			stmt.close();
+		} catch (SQLException e) {}
+		
+		return toRet;
+	}
+	
+	public ArrayList<String> get_atributos(String tabla){
+		
+		ArrayList<String> toRet = new ArrayList<String>();
+		String sql = "describe " + tabla;
+		
+		try {
+			Statement stmt = conexionBD.createStatement();
+			ResultSet atributos_aux = stmt.executeQuery(sql);
+			
+			while(atributos_aux.next()) {
+				toRet.add(atributos_aux.getString(1));
+			}
+			atributos_aux.close();
+			stmt.close();
+		} catch (SQLException e) {}
+		return toRet;
+	}
+	
+}

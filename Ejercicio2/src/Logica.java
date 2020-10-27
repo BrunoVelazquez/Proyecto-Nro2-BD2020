@@ -117,4 +117,28 @@ public class Logica {
 		return toRet;
 	}
 	
+	//Verifica si un parquimetro existe en esa ubicacion
+	public boolean esParquimetroValido(String[] data) {
+		boolean toRet = false;
+		if(data.length < 3)
+			return false;
+		
+		String calle = data[0];
+		int altura = Integer.parseInt(data[1]);
+		int idParquimetro = Integer.parseInt(data[2]);
+
+		try {
+			Statement statement = conexionBD.createStatement();
+			String consulta = "SELECT * FROM parquimetros WHERE calle = '"+calle+ "' and altura = " +altura+ " and id_parq = " +idParquimetro;
+			ResultSet res = statement.executeQuery(consulta);
+			//verifico si existe por lo menos una tupla
+			if(res.next()) //si entra aca significa q tiene por lo menos una tupla y existe este parquimetro
+				toRet = true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		   return toRet;
+	   }
+	
+	
 }

@@ -1,0 +1,309 @@
+import java.awt.BorderLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
+import java.sql.SQLException;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
+
+
+@SuppressWarnings("serial")
+public class VentanaPrincipal extends javax.swing.JFrame 
+{
+
+	private Logica logica;
+   private Ventana_Consulta_A_Logica vcal;
+   private VentanaTablas ventanaTablas;
+
+   private JDesktopPane jDesktopPane1;
+   private JMenuBar jMenuBar1;
+   private JMenuItem mniConsultas, mniUnidadPersonal;
+   private JMenu menuAdmin, menuInspector;
+
+   /**
+   * Auto-generated main method to display this JFrame
+   */
+   public static void main(String[] args) 
+   {
+      SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            VentanaPrincipal inst = new VentanaPrincipal();
+            inst.setLocationRelativeTo(null);
+            inst.setVisible(true);
+         }
+      });
+   }
+   
+   public VentanaPrincipal() 
+   {
+      super();
+
+      initGUI();
+      logica = new Logica();
+      this.vcal = new Ventana_Consulta_A_Logica(logica);
+      this.vcal.setVisible(false);
+      this.jDesktopPane1.add(this.vcal);
+      
+      this.ventanaTablas = new VentanaTablas();
+   }
+   
+   private void initGUI() 
+   {
+      try 
+      {
+         javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+      } 
+      catch(Exception e) 
+      {
+         e.printStackTrace();
+      }
+      
+      try {
+         {
+            this.setTitle("Ejercicio numero 2");
+            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            this.setResizable(false);
+         }
+         {
+            jDesktopPane1 = new JDesktopPane();
+            getContentPane().add(jDesktopPane1, BorderLayout.CENTER);
+            jDesktopPane1.setPreferredSize(new java.awt.Dimension(800, 600));
+         }
+         {
+            jMenuBar1 = new JMenuBar();
+            setJMenuBar(jMenuBar1);
+            {
+            	menuAdmin = new JMenu();
+               jMenuBar1.add(menuAdmin);
+               menuAdmin.setText("Admin");
+               
+               menuInspector = new JMenu();
+               jMenuBar1.add(menuInspector);
+               menuInspector.setText("Inspector");
+               {
+                  mniConsultas = new JMenuItem();
+                  menuAdmin.add(mniConsultas);
+                  mniConsultas.setText("Consultas (Utilizando DBTable)");
+                  mniConsultas.addActionListener(new ActionListener() {
+                     public void actionPerformed(ActionEvent evt) {
+                        mniConsultasActionPerformed(evt);
+                     }
+                  });
+               }
+               {
+                   mniUnidadPersonal = new JMenuItem();
+                   menuInspector.add(mniUnidadPersonal);
+                   mniUnidadPersonal.setText("Unidad Personal");
+                   mniUnidadPersonal.addActionListener(new ActionListener() {
+                      public void actionPerformed(ActionEvent evt) {
+                         mniUnidadPersonalActionPerformed(evt);
+                      }
+                   });
+                }
+            }
+         }
+         this.setSize(800, 600);
+         pack();
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+   
+   private void mniConsultasActionPerformed(ActionEvent evt) {
+	  JPasswordField pass = new JPasswordField();
+	  boolean conectado = false;
+	  while (!conectado) {
+		  try {
+			  conectado = true;
+	    	  int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contraseña de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+	    	  if (res == JOptionPane.OK_OPTION) {
+	    	    String password = new String(pass.getPassword());
+	    	    logica.iniciar_sesion_admin(password);
+	    	    this.vcal.generar_tabla_atributos();
+	            this.vcal.setMaximum(true);
+	            this.vcal.setVisible(true); 
+	    	  }
+	         
+	      } catch (PropertyVetoException e) {} 
+	      	catch (SQLException e) {
+	    	  JOptionPane.showMessageDialog(null, "Ingrese los datos correctamente \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+	    	  conectado = false;
+		}
+		  pass.setText("");
+	  }  
+ 	
+   }
+
+   //Accion que ocurre luego de presionar el boton de unidad personal
+   private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
+	   
+	   //Se pide el login
+	   JTextField nro_legajo = new JTextField();
+	   JPasswordField pass = new JPasswordField();
+	   boolean conectado = false;
+	   while (!conectado) {
+		   try {
+			   conectado = true;
+			   
+			   Object[] message = {
+			       "Legajo:", nro_legajo,
+			       "Contraseña:", pass
+			   };
+		
+			   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos de inspector", JOptionPane.OK_CANCEL_OPTION);
+			   
+			   if (res == JOptionPane.OK_OPTION) {
+				   logica.iniciar_sesion_usuario_inspector();
+				   int legajo = this.validarCampos(nro_legajo,pass);
+				   String password = new String(pass.getPassword());
+				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
+				   JOptionPane.showMessageDialog(null, "Bienvenido "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
+				   String[] patentes = mostrarIngresePatentes();
+				   String[] ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
+				   
+				   //ubicacionParquimetro[0] seria la calle 
+				   //ubicacionParquimetro[1] seria la altura
+				   //ubicacionParquimetro[2] seria el id del parquimetro
+				   
+				   //registrar ingreso del inspector al parquimetro
+				   registrarIngresoInspector();
+				   
+				   //generar la multa correspondiente
+				   generarMultas();
+				   
+				   //mostrar listado de multas labradas con:
+				   //numero de multa, fecha, hora, calle, altura, patente del auto y legajo del inspector.
+				   mostrarListadoMultas();
+			   }
+				
+				//Si el login no fue correcto 
+			} catch (SQLException | NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Datos erróneos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+		  	  	conectado = false;
+		  	  	nro_legajo.setText("");
+		  	  	pass.setText("");
+			}
+		   	  
+	   }
+	   nro_legajo.setText("");
+	   pass.setText("");
+	   
+   }
+   
+   private int validarCampos(JTextField nro_legajo, JPasswordField pass) throws NumberFormatException{
+	   int toRet = 0;
+	   boolean faltante = (nro_legajo.getText().isEmpty()) || (pass.getPassword().length == 0);
+	   
+		   if (!faltante) {
+			   try {
+			   toRet = Integer.parseInt(nro_legajo.getText());
+			   }
+			   catch (NumberFormatException e) {
+				   throw new NumberFormatException("El legajo debe ser numerico");
+			   }
+		   }
+		   else
+			   throw new NumberFormatException("No deje espacios en blanco");
+	   
+	   return toRet;
+   }
+   
+   //Muestra el cartel para que el inspector ingrese las patentes 
+   //Lo retorna en un arreglo llamado arregloPatentes[]
+   public String[] mostrarIngresePatentes() {
+	   String[] toRet = {};
+	   JTextField campoPatentes = new JTextField();
+	   Object[] message = {
+		       "Deben estar separadas por un espacio:", campoPatentes,
+	   };
+	
+	   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese las patentes", JOptionPane.OK_CANCEL_OPTION);
+		   
+	   if (res == JOptionPane.OK_OPTION) {
+		   //Verifico el contenido del JTextField
+		   if(campoPatentes.getText().isEmpty()) { //o es invalida
+			   JOptionPane.showMessageDialog(null, "De la forma: ''ABC123''", "Ingrese las patentes en el formato correcto", JOptionPane.ERROR_MESSAGE );
+			   mostrarIngresePatentes(); //se repite hasta hacerlo bien
+		   } else {
+			   JOptionPane.showMessageDialog(null, "Felicidades", "Patentes ingresadas correctamente", JOptionPane.PLAIN_MESSAGE);
+			   //meto las patentes en un arreglo para luego trabajar con ellas
+			   String[] arregloPatentes = campoPatentes.getText().split(" ");
+			   toRet = arregloPatentes;
+			   mostrarIngreseUbicacionParquimetro();
+		   }	   
+	   }	
+	   for(int i = 0; i < toRet.length; i++)
+		   System.out.print(toRet[i]);
+	   return toRet;
+   }
+   
+   //Muestra el cartel para que el inspector ingrese la ubicacion y el id del parquimetro 
+   //Guarda la ubicacion en ubicacionParquimetro, donde:
+   //ubicacionParquimetro[0] seria la calle 
+   //ubicacionParquimetro[1] seria la altura
+   //ubicacionParquimetro[2] seria el id del parquimetro
+   public String[] mostrarIngreseUbicacionParquimetro() {
+	   String[] toRet = {};
+	   JTextField campoUbicacion = new JTextField();
+	   JTextField campoParquimetro = new JTextField();
+	   Object[] message = {
+		       "Ingrese la ubicacion, separando la calle de la altura con un espacio:", campoUbicacion,
+		       "Ingrese el id del parquimetro:", campoParquimetro
+	   };
+	
+	   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos", JOptionPane.OK_CANCEL_OPTION);
+		   
+	   if (res == JOptionPane.OK_OPTION) {
+		   //Verifico el contenido de los campos de texto
+		   if(campoUbicacion.getText().isEmpty() || campoParquimetro.getText().isEmpty()) { //o es invalida
+			   JOptionPane.showMessageDialog(null, "", "Ingrese los datos en el formato correcto", JOptionPane.ERROR_MESSAGE );
+			   mostrarIngreseUbicacionParquimetro(); //se repite hasta hacerlo bien
+		   } else {
+			   JOptionPane.showMessageDialog(null, "Felicidades", "Datos ingresados correctamente", JOptionPane.PLAIN_MESSAGE);
+			   //meto los datos en un arreglo para luego trabajarlo
+			   String auxiliar = campoUbicacion.getText() + " " + campoParquimetro.getText();
+			   String[] ubicacionParquimetro = auxiliar.split(" ");
+			   boolean es = esParquimetroValido(ubicacionParquimetro);
+			   toRet = ubicacionParquimetro;
+		   }
+	   }
+	   return toRet;
+   }
+   
+   //Verifica si un parquimetro existe en esa direccion
+   public boolean esParquimetroValido(String[] data) {
+	   boolean toRet = false;
+	   
+	   
+	   
+	   
+	   
+	   
+	   return toRet;
+   }
+   
+   
+   
+}

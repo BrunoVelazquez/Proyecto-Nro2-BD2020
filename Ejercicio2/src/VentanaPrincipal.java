@@ -180,8 +180,31 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   String password = new String(pass.getPassword());
 				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
 				   JOptionPane.showMessageDialog(null, "Bienvenido "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
-				   String[] patentes = mostrarIngresePatentes();
-				   String[] ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
+				   
+				   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
+				   String[] patentes = {};
+				   String[] ubicacionParquimetro = {};
+				   while((patentes.length == 0) && (ubicacionParquimetro.length == 0)) {
+					   patentes = mostrarIngresePatentes();
+					   ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
+				   }
+				   
+				   
+				   
+				   
+				   //ubicacionParquimetro[0] seria la calle 
+				   //ubicacionParquimetro[1] seria la altura
+				   //ubicacionParquimetro[2] seria el id del parquimetro
+				   
+				   //registrar ingreso del inspector al parquimetro
+//				   registrarIngresoInspector();
+//				   
+//				   //generar la multa correspondiente
+//				   generarMultas();
+//				   
+//				   //mostrar listado de multas labradas con:
+//				   //numero de multa, fecha, hora, calle, altura, patente del auto y legajo del inspector.
+//				   mostrarListadoMultas();
 			   }
 				
 				//Si el login no fue correcto 
@@ -231,7 +254,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 		   //Verifico el contenido del JTextField
 		   if(campoPatentes.getText().isEmpty()) { //o es invalida
 			   JOptionPane.showMessageDialog(null, "De la forma: ''ABC123''", "Ingrese las patentes en el formato correcto", JOptionPane.ERROR_MESSAGE );
-			   mostrarIngresePatentes(); //se repite hasta hacerlo bien
 		   } else {
 			   JOptionPane.showMessageDialog(null, "Felicidades", "Patentes ingresadas correctamente", JOptionPane.PLAIN_MESSAGE);
 			   //meto las patentes en un arreglo para luego trabajar con ellas
@@ -240,8 +262,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 			   mostrarIngreseUbicacionParquimetro();
 		   }	   
 	   }	
-	   for(int i = 0; i < toRet.length; i++)
-		   System.out.print(toRet[i]);
 	   return toRet;
    }
    
@@ -265,17 +285,24 @@ public class VentanaPrincipal extends javax.swing.JFrame
 		   //Verifico el contenido de los campos de texto
 		   if(campoUbicacion.getText().isEmpty() || campoParquimetro.getText().isEmpty()) { //o es invalida
 			   JOptionPane.showMessageDialog(null, "", "Ingrese los datos en el formato correcto", JOptionPane.ERROR_MESSAGE );
-			   mostrarIngreseUbicacionParquimetro(); //se repite hasta hacerlo bien
-		   } else {
-			   JOptionPane.showMessageDialog(null, "Felicidades", "Datos ingresados correctamente", JOptionPane.PLAIN_MESSAGE);
+		   } else {  
 			   //meto los datos en un arreglo para luego trabajarlo
 			   String auxiliar = campoUbicacion.getText() + " " + campoParquimetro.getText();
 			   String[] ubicacionParquimetro = auxiliar.split(" ");
-			   toRet = ubicacionParquimetro;
+			   boolean esValido = logica.esParquimetroValido(ubicacionParquimetro);
+			   if(!esValido) {
+				   JOptionPane.showMessageDialog(null, "", "Ese parquimetro no existe en esa ubicacion", JOptionPane.ERROR_MESSAGE );
+				   
+			   } else {
+				   JOptionPane.showMessageDialog(null, "Felicidades", "Datos ingresados correctamente", JOptionPane.PLAIN_MESSAGE);
+				   toRet = ubicacionParquimetro;
+			   }
 		   }
 	   }
 	   return toRet;
    }
+   
+   
    
    
    

@@ -8,4 +8,6 @@
 		<item key="assumeCloneReturnsSameType" value="true"/>
 		<item key="leaveUnconstrainedRaw" value="true"/>
 	</section>
+	<section name="org.eclipse.ltk.ui.refactoring.settings">
+	</section>
 </section>
