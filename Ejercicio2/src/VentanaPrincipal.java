@@ -5,18 +5,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.SQLException;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -28,7 +31,8 @@ import javax.swing.WindowConstants;
 public class VentanaPrincipal extends javax.swing.JFrame 
 {
 
-   private VentanaConsultas ventanaConsultas;
+	private Logica logica;
+   private Ventana_Consulta_A_Logica vcal;
    private VentanaTablas ventanaTablas;
 
    private JDesktopPane jDesktopPane1;
@@ -55,12 +59,14 @@ public class VentanaPrincipal extends javax.swing.JFrame
       super();
 
       initGUI();
-
+      logica = new Logica();
+      this.vcal = new Ventana_Consulta_A_Logica(logica);
+      this.vcal.setVisible(false);
+      this.jDesktopPane1.add(this.vcal);
       
-      this.ventanaConsultas = new VentanaConsultas();
-      this.ventanaConsultas.setVisible(false);
-      this.jDesktopPane1.add(this.ventanaConsultas);
-
+      this.ventanaTablas = new VentanaTablas();
+//      this.ventanaTablas.setVisible(false);
+//      this.jDesktopPane1.add(this.ventanaTablas);
    }
    
    private void initGUI() 
@@ -78,6 +84,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
          {
             this.setTitle("Ejercicio numero 2");
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            this.setResizable(false);
          }
          {
             jDesktopPane1 = new JDesktopPane();
@@ -125,15 +132,86 @@ public class VentanaPrincipal extends javax.swing.JFrame
    }
    
    private void mniConsultasActionPerformed(ActionEvent evt) {
-      try {
-         this.ventanaConsultas.setMaximum(true);
-      } catch (PropertyVetoException e) {}
-      this.ventanaConsultas.setVisible(true);      
-      ventanaTablas = new VentanaTablas();    
+	  JPasswordField pass = new JPasswordField();
+	  boolean conectado = false;
+	  while (!conectado) {
+		  try {
+			  conectado = true;
+	    	  int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contraseña de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+	    	  if (res == JOptionPane.OK_OPTION) {
+	    	    String password = new String(pass.getPassword());
+	    	    logica.iniciar_sesion_admin(password);
+	    	    this.vcal.generar_tabla_atributos();
+	            this.vcal.setMaximum(true);
+	            this.vcal.setVisible(true); 
+	    	  }
+	         
+	      } catch (PropertyVetoException e) {} 
+	      	catch (SQLException e) {
+	    	  JOptionPane.showMessageDialog(null, "Ingrese los datos correctamente \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+	    	  conectado = false;
+		}
+		  pass.setText("");
+	  }  
+ 	
    }
 
    private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
-	   LogeoInspector login = new LogeoInspector();
+	   
+	   
+	   JTextField nro_legajo = new JTextField();
+	   JPasswordField pass = new JPasswordField();
+	   boolean conectado = false;
+	   while (!conectado) {
+		   try {
+			   conectado = true;
+			   
+			   Object[] message = {
+			       "Legajo:", nro_legajo,
+			       "Contraseña:", pass
+			   };
+		
+			   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos de inspector", JOptionPane.OK_CANCEL_OPTION);
+			   
+			   if (res == JOptionPane.OK_OPTION) {
+				   logica.iniciar_sesion_usuario_inspector();
+				   int legajo = this.validarCampos(nro_legajo,pass);
+				   String password = new String(pass.getPassword());
+				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
+				   JOptionPane.showMessageDialog(null, "Bienvenido "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
+			   }
+				
+				
+			} catch (SQLException | NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Datos erróneos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+		  	  	conectado = false;
+		  	  	nro_legajo.setText("");
+		  	  	pass.setText("");
+			}
+		   	  
+	   }
+	   nro_legajo.setText("");
+	   pass.setText("");
+	   
+   }
+   
+   private int validarCampos(JTextField nro_legajo, JPasswordField pass) throws NumberFormatException{
+	   int toRet = 0;
+	   boolean faltante = (nro_legajo.getText().isEmpty()) || (pass.getPassword().length == 0);
+	   
+		   if (!faltante) {
+			   try {
+			   toRet = Integer.parseInt(nro_legajo.getText());
+			   }
+			   catch (NumberFormatException e) {
+				   throw new NumberFormatException("El legajo debe ser numerico");
+			   }
+		   }
+		   else
+			   throw new NumberFormatException("No deje espacios en blanco");
+	   
+	   return toRet;
    }
    
 }

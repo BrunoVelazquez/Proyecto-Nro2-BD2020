@@ -6,10 +6,15 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import java.sql.Types;
-//import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,8 +24,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import quick.dbtable.*; 
+import quick.dbtable.*;
+import java.awt.FlowLayout;
+import javax.swing.JList; 
 
 
 @SuppressWarnings("serial")
@@ -31,8 +40,9 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
    private JButton botonBorrar;
    private JButton btnEjecutar;
    private DBTable tabla;    
-   private JScrollPane scrConsulta;
-
+   private JScrollPane scrConsulta, scrollPane_1;
+   private JList list1,list2;
+   private Connection conexionDB = null;
    
    
    public VentanaConsultas() 
@@ -47,9 +57,7 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
          setPreferredSize(new Dimension(800, 600));
          this.setBounds(0, 0, 800, 600);
          setVisible(true);
-         BorderLayout thisLayout = new BorderLayout();
          this.setTitle("Consultas (Utilizando DBTable)");
-         getContentPane().setLayout(thisLayout);
          this.setClosable(true);
          this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
          this.setMaximizable(true);
@@ -61,9 +69,12 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
                thisComponentShown(evt);
             }
          });
+         getContentPane().setLayout(null);
          {
             pnlConsulta = new JPanel();
-            getContentPane().add(pnlConsulta, BorderLayout.NORTH);
+            pnlConsulta.setBounds(31, 5, 722, 186);
+            getContentPane().add(pnlConsulta);
+            pnlConsulta.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
             {
                scrConsulta = new JScrollPane();
                pnlConsulta.add(scrConsulta);
@@ -102,9 +113,10 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
          {
         	// crea la tabla  
         	tabla = new DBTable();
+        	tabla.setBounds(31, 196, 566, 427);
         	
         	// Agrega la tabla al frame (no necesita JScrollPane como Jtable)
-            getContentPane().add(tabla, BorderLayout.CENTER);           
+            getContentPane().add(tabla);           
                       
            // setea la tabla para sólo lectura (no se puede editar su contenido)  
            tabla.setEditable(false);       
@@ -112,6 +124,25 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
            
            
          }
+         
+         JPanel panel = new JPanel();
+         panel.setBounds(607, 202, 167, 357);
+         getContentPane().add(panel);
+         panel.setLayout(null);
+         
+         JScrollPane scrollPane = new JScrollPane();
+         scrollPane.setBounds(0, 0, 167, 130);
+         panel.add(scrollPane);
+         
+         list1 = new JList();
+         scrollPane.setColumnHeaderView(list1);
+         
+         scrollPane_1 = new JScrollPane();
+         scrollPane_1.setBounds(0, 178, 167, 130);
+         panel.add(scrollPane_1);
+         
+         list2 = new JList();
+         scrollPane_1.setColumnHeaderView(list2);
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -144,7 +175,7 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
             String uriConexion = "jdbc:mysql://" + servidor + "/" + 
         	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
    
-       //establece una conexión con la  B.D. "parquimetros"  usando directamante una tabla DBTable    
+       //establece una conexión con la  B.D. "batallas"  usando directamante una tabla DBTable    
             tabla.connectDatabase(driver, uriConexion, usuario, clave);
            
          }
@@ -188,7 +219,7 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
     	 tabla.setSelectSql(this.txtConsulta.getText().trim());
 
     	  // obtenemos el modelo de la tabla a partir de la consulta para 
-    	  // modificar la forma en que se muestran de algunas columnas  
+    	  // modificar la forma en que se muestran de algunas columnas
     	  tabla.createColumnModelFromQuery();    	    
     	  for (int i = 0; i < tabla.getColumnCount(); i++)
     	  { // para que muestre correctamente los valores de tipo TIME (hora)  		   		  
@@ -225,5 +256,5 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
       }
       
    }
-   
+
 }
