@@ -180,7 +180,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   String password = new String(pass.getPassword());
 				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
 				   JOptionPane.showMessageDialog(null, "Bienvenido "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
-				   mostrarIngresePatentes();
+				   String[] patentes = mostrarIngresePatentes();
+				   String[] ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
 			   }
 				
 				//Si el login no fue correcto 
@@ -216,54 +217,64 @@ public class VentanaPrincipal extends javax.swing.JFrame
    }
    
    //Muestra el cartel para que el inspector ingrese las patentes 
-   //Las guarda en un arreglo llamado arregloPatentes
-   public void mostrarIngresePatentes() {
+   //Lo retorna en un arreglo llamado arregloPatentes[]
+   public String[] mostrarIngresePatentes() {
+	   String[] toRet = {};
 	   JTextField campoPatentes = new JTextField();
 	   Object[] message = {
 		       "Deben estar separadas por un espacio:", campoPatentes,
-		   };
+	   };
 	
-		   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese las patentes", JOptionPane.OK_CANCEL_OPTION);
+	   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese las patentes", JOptionPane.OK_CANCEL_OPTION);
 		   
-		   if (res == JOptionPane.OK_OPTION) {
-			   //Verifico el contenido del JTextField
-			   if(campoPatentes.getText().isEmpty()) { //o es invalida
-				   JOptionPane.showMessageDialog(null, "De la forma: ''ABC123''", "Ingrese las patentes en el formato correcto", JOptionPane.ERROR_MESSAGE );
-				   mostrarIngresePatentes(); //se repite hasta hacerlo bien
-			   } else {
-				   JOptionPane.showMessageDialog(null, "Felicidades", "Patentes ingresadas correctamente", JOptionPane.PLAIN_MESSAGE);
-				   //meto las patentes en un arreglo para luego trabajar con ellas
-				   String[] arregloPatentes = campoPatentes.getText().split(" ");
-				   mostrarIngreseUbicacionParquimetro();
-			   }	   
-		   }		
+	   if (res == JOptionPane.OK_OPTION) {
+		   //Verifico el contenido del JTextField
+		   if(campoPatentes.getText().isEmpty()) { //o es invalida
+			   JOptionPane.showMessageDialog(null, "De la forma: ''ABC123''", "Ingrese las patentes en el formato correcto", JOptionPane.ERROR_MESSAGE );
+			   mostrarIngresePatentes(); //se repite hasta hacerlo bien
+		   } else {
+			   JOptionPane.showMessageDialog(null, "Felicidades", "Patentes ingresadas correctamente", JOptionPane.PLAIN_MESSAGE);
+			   //meto las patentes en un arreglo para luego trabajar con ellas
+			   String[] arregloPatentes = campoPatentes.getText().split(" ");
+			   toRet = arregloPatentes;
+			   mostrarIngreseUbicacionParquimetro();
+		   }	   
+	   }	
+	   for(int i = 0; i < toRet.length; i++)
+		   System.out.print(toRet[i]);
+	   return toRet;
    }
    
    //Muestra el cartel para que el inspector ingrese la ubicacion y el id del parquimetro 
-   //Guarda la ubicacion en arregloUbicacion, donde arregloUbicacion[0] seria la calle y arregloUbicacion[1] seria la altura
-   //Guarda el id del parquimetro en el String parquimetro
-   public void mostrarIngreseUbicacionParquimetro() {
+   //Guarda la ubicacion en ubicacionParquimetro, donde:
+   //ubicacionParquimetro[0] seria la calle 
+   //ubicacionParquimetro[1] seria la altura
+   //ubicacionParquimetro[2] seria el id del parquimetro
+   public String[] mostrarIngreseUbicacionParquimetro() {
+	   String[] toRet = {};
 	   JTextField campoUbicacion = new JTextField();
 	   JTextField campoParquimetro = new JTextField();
 	   Object[] message = {
 		       "Ingrese la ubicacion, separando la calle de la altura con un espacio:", campoUbicacion,
 		       "Ingrese el id del parquimetro:", campoParquimetro
-		   };
+	   };
 	
-		   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos", JOptionPane.OK_CANCEL_OPTION);
+	   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos", JOptionPane.OK_CANCEL_OPTION);
 		   
-		   if (res == JOptionPane.OK_OPTION) {
-			   //Verifico el contenido de los campos de texto
-			   if(campoUbicacion.getText().isEmpty() || campoParquimetro.getText().isEmpty()) { //o es invalida
-				   JOptionPane.showMessageDialog(null, "", "Ingrese los datos en el formato correcto", JOptionPane.ERROR_MESSAGE );
-				   mostrarIngreseUbicacionParquimetro(); //se repite hasta hacerlo bien
-			   } else {
-				   JOptionPane.showMessageDialog(null, "Felicidades", "Datos ingresados correctamente", JOptionPane.PLAIN_MESSAGE);
-				   //meto las patentes en un arreglo para luego trabajar con ellas
-				   String[] arregloUbicacion = campoUbicacion.getText().split(" ");
-				   String parquimetro = campoParquimetro.getText();
-			   }	   
-		   }		
+	   if (res == JOptionPane.OK_OPTION) {
+		   //Verifico el contenido de los campos de texto
+		   if(campoUbicacion.getText().isEmpty() || campoParquimetro.getText().isEmpty()) { //o es invalida
+			   JOptionPane.showMessageDialog(null, "", "Ingrese los datos en el formato correcto", JOptionPane.ERROR_MESSAGE );
+			   mostrarIngreseUbicacionParquimetro(); //se repite hasta hacerlo bien
+		   } else {
+			   JOptionPane.showMessageDialog(null, "Felicidades", "Datos ingresados correctamente", JOptionPane.PLAIN_MESSAGE);
+			   //meto los datos en un arreglo para luego trabajarlo
+			   String auxiliar = campoUbicacion.getText() + " " + campoParquimetro.getText();
+			   String[] ubicacionParquimetro = auxiliar.split(" ");
+			   toRet = ubicacionParquimetro;
+		   }
+	   }
+	   return toRet;
    }
    
    
