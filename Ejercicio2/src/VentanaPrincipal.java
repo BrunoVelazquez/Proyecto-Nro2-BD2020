@@ -182,22 +182,19 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   JOptionPane.showMessageDialog(null, "Bienvenido "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
 				   
 				   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
+				   //ubicacionParquimetro[0] seria la calle 
+				   //ubicacionParquimetro[1] seria la altura
+				   //ubicacionParquimetro[2] seria el id del parquimetro
 				   String[] patentes = mostrarIngresePatentes();
 				   if(patentes.length != 0) {
 					   String[] ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
 					   if(ubicacionParquimetro.length != 0)
+						   //registra ingreso del inspector al parquimetro en la tabla accede
 						   logica.registrarIngresoInspector(legajo, Integer.parseInt(ubicacionParquimetro[2]));
-				   
-				   
-				   //ubicacionParquimetro[0] seria la calle 
-				   //ubicacionParquimetro[1] seria la altura
-				   //ubicacionParquimetro[2] seria el id del parquimetro
-				   
-				   //registra ingreso del inspector al parquimetro en la tabla accede
-					   
 				   }
+				   
 //				   //generar la multa correspondiente
-//				   generarMultas();
+//				   logica.generarMultas();
 //				   
 //				   //mostrar listado de multas labradas con:
 //				   //numero de multa, fecha, hora, calle, altura, patente del auto y legajo del inspector.
