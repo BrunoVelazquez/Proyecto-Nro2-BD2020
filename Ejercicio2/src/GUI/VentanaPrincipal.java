@@ -129,7 +129,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	  while (!conectado) {
 		  try {
 			  conectado = true;
-	    	  int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contrase�a de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	    	  int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contraseña de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 	    	  if (res == JOptionPane.OK_OPTION) {
 	    	    String password = new String(pass.getPassword());
@@ -164,7 +164,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 			   
 			   Object[] message = {
 			       "Legajo:", nro_legajo,
-			       "Contrase�a:", pass
+			       "Contraseña:", pass
 			   };
 		
 			   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos de inspector", JOptionPane.OK_CANCEL_OPTION);
@@ -174,7 +174,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   int legajo = this.validarCampos(nro_legajo,pass);
 				   String password = new String(pass.getPassword());
 				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
-				   JOptionPane.showMessageDialog(null, "Bienvenido: "+nombre_completo, "Sesi�n iniciada", JOptionPane.PLAIN_MESSAGE);
+				   JOptionPane.showMessageDialog(null, "Bienvenido: "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
 				   
 				   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
 				   this.vup = new VentanaUnidadPersonal(logica);
@@ -216,7 +216,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				//Si el login no fue correcto 
 		   	} 	catch (PropertyVetoException e) {}  
 	   			catch (SQLException | WrongInputException e) {
-				JOptionPane.showMessageDialog(null, "Datos err�neos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog(null, "Datos erróneos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
 		  	  	conectado = false;
 			} finally {
 				   nro_legajo.setText("");
