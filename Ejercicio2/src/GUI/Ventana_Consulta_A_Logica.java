@@ -1,3 +1,4 @@
+package GUI;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -21,6 +22,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import Logica.Logica;
 import quick.dbtable.DBTable;
 import java.awt.Font;
 

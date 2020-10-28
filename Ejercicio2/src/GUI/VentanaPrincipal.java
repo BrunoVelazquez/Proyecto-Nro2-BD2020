@@ -1,3 +1,4 @@
+package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+
+import Logica.Logica;
+import Logica.WrongInputException;
 
 
 

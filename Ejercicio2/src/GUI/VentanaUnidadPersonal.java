@@ -1,3 +1,4 @@
+package GUI;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,10 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.PlainDocument;
+
+import Logica.Logica;
+import Logica.WrongInputException;
+
 import javax.swing.JList;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
