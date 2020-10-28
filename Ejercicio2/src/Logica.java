@@ -1,3 +1,4 @@
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,18 +83,19 @@ public class Logica {
 	public ArrayList<String> get_tablas(){
 		
 		ArrayList<String> toRet = new ArrayList<String>();
+		ResultSet tablas_aux = null;
 		String sql = "show tables";
 		String nombre = "";
-		Statement stmt = null;
 		
 		try {
 			stmt = conexionBD.createStatement();
-			ResultSet tablas_aux = stmt.executeQuery(sql);
+			tablas_aux = stmt.executeQuery(sql);
 			
 			while(tablas_aux.next()) {
 				nombre = tablas_aux.getString(1);
 				toRet.add(nombre);
 			}
+		
 			tablas_aux.close();
 			stmt.close();
 		} catch (SQLException e) {}
@@ -116,6 +118,53 @@ public class Logica {
 			atributos_aux.close();
 			stmt.close();
 		} catch (SQLException e) {}
+		return toRet;
+	}
+	
+	public ArrayList<String[]> get_ubicaciones(){
+		
+		ArrayList<String[]> toRet = new ArrayList<String[]>();
+		String sql = "SELECT calle,altura "
+					+"FROM estacionados "
+					+"ORDER BY calle";
+
+		try {
+			stmt = conexionBD.createStatement();
+			ResultSet ubicaciones = stmt.executeQuery(sql);
+			
+			while(ubicaciones.next()) {
+				String[] calle_altura = new String[2];
+				calle_altura[0] = ubicaciones.getString("calle");
+				calle_altura[1] = ubicaciones.getString("altura");
+				toRet.add(calle_altura);
+			}
+			stmt.close();
+			ubicaciones.close();
+		} catch (SQLException e) {}
+		return toRet;
+	}
+	
+	
+	public ArrayList<String> get_parquimetros_de_ubicaciones(String[] calle_altura) {
+		ArrayList<String> toRet = new ArrayList<String>();
+		
+		String sql = "SELECT id_parq "
+					+"FROM estacionados NATURAL JOIN parquimetros "
+					+"WHERE calle = ? AND altura = ?";
+		
+		try {
+			p_stmt = conexionBD.prepareStatement(sql);
+			p_stmt.setString(1, calle_altura[0]);
+			p_stmt.setString(2, calle_altura[1]);
+			ResultSet parquimetros = p_stmt.executeQuery();
+			
+			while(parquimetros.next()) {
+				toRet.add(parquimetros.getString("id_parq"));
+			}
+			p_stmt.close();
+			parquimetros.close();
+		} catch (SQLException e) {}
+		
 		return toRet;
 	}
 	
@@ -162,5 +211,28 @@ public class Logica {
 	}
 	
 	
+
+	public void chequear_patente(String text) throws WrongInputException {
+		
+		String sql = "SELECT patente "
+					+"FROM estacionados "
+					+"WHERE patente = ?";
+				
+		ResultSet rs;
+		boolean existe = false;
+		try {
+			p_stmt = conexionBD.prepareStatement(sql);
+			p_stmt.setString(1,text);
+			rs = p_stmt.executeQuery();
+			
+			existe = rs.next();
+			rs.close();
+			p_stmt.close();
+			
+			if (!existe)
+				throw new WrongInputException("La patente no existe en la base de datos");
+			
+		} catch (SQLException e) {}	
+	}
 }
 

@@ -1,21 +1,16 @@
+
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
 
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,6 +25,7 @@ import quick.dbtable.DBTable;
 import java.awt.Font;
 
 
+@SuppressWarnings("serial")
 public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 
 	private Logica log;
@@ -108,7 +104,12 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	         model1 = new DefaultListModel<>();
 	         tablas = new JList<String>(model1);
 	         panel_tabla.setViewportView(tablas);
-	         tablas.addListSelectionListener(new ListListener());
+	         tablas.addListSelectionListener(new ListSelectionListener(){
+				public void valueChanged(ListSelectionEvent e) {
+					mostrar_atributos_de_tabla_seleccionada(e);
+				}
+	        	 
+	         });
 	         
 	         JScrollPane panel_atributos = new JScrollPane();
 	         panel_atributos.setBounds(534, 187, 220, 155);
@@ -126,22 +127,19 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	 		
 	   }
 	   
-	   private class ListListener implements ListSelectionListener {
-			public void valueChanged(ListSelectionEvent arg0) {
-
-					String tablaSeleccionada = (String) tablas.getSelectedValue();
-					ArrayList<String> atributos2 = log.get_atributos(tablaSeleccionada);
-					Iterator<String> ite_atributos = atributos2.iterator();
-					
-					model2 = new DefaultListModel<String>();
-					
-					while (ite_atributos.hasNext()) {
-						model2.addElement(ite_atributos.next());
-					}
-					atributos.setModel(model2);
-					atributos.setVisible(true);
-			}
-
+	   private void mostrar_atributos_de_tabla_seleccionada(ListSelectionEvent e) {	   
+		   if (!e.getValueIsAdjusting()) {
+			   model2.removeAllElements();
+				String tablaSeleccionada = (String) tablas.getSelectedValue();
+				ArrayList<String> atributos2 = log.get_atributos(tablaSeleccionada);
+				Iterator<String> ite_atributos = atributos2.iterator();
+								
+				while (ite_atributos.hasNext()) {
+					model2.addElement(ite_atributos.next());
+				}
+		   }
+			  
+		   
 	   }
 
 	   public void generar_tabla_atributos(){
