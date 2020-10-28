@@ -1,5 +1,7 @@
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Logica {
 
@@ -134,11 +136,31 @@ public class Logica {
 			//verifico si existe por lo menos una tupla
 			if(res.next()) //si entra aca significa q tiene por lo menos una tupla y existe este parquimetro
 				toRet = true;
+			
+			statement.close();
+			res.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		   return toRet;
 	   }
 	
+	//registra en la tabla accede, que el inspector accedio al parquimetro
+	public void registrarIngresoInspector(int legajo, int parquimetro) {
+		try {
+			Statement statement = conexionBD.createStatement();
+			String fecha = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); 
+			String hora = new SimpleDateFormat("HH:mm:ss").format(new Date());
+			String insert = "INSERT INTO accede (legajo, id_parq, fecha, hora) VALUES (" +legajo+ ", " +parquimetro+ ", '" +fecha+ "', '"+hora+"')";
+			System.out.println(insert);
+			statement.executeUpdate(insert);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 }
+

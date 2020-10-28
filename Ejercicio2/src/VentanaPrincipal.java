@@ -182,23 +182,20 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   JOptionPane.showMessageDialog(null, "Bienvenido "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
 				   
 				   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
-				   String[] patentes = {};
-				   String[] ubicacionParquimetro = {};
-				   while((patentes.length == 0) && (ubicacionParquimetro.length == 0)) {
-					   patentes = mostrarIngresePatentes();
-					   ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
-				   }
-				   
-				   
+				   String[] patentes = mostrarIngresePatentes();
+				   if(patentes.length != 0) {
+					   String[] ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
+					   if(ubicacionParquimetro.length != 0)
+						   logica.registrarIngresoInspector(legajo, Integer.parseInt(ubicacionParquimetro[2]));
 				   
 				   
 				   //ubicacionParquimetro[0] seria la calle 
 				   //ubicacionParquimetro[1] seria la altura
 				   //ubicacionParquimetro[2] seria el id del parquimetro
 				   
-				   //registrar ingreso del inspector al parquimetro
-//				   registrarIngresoInspector();
-//				   
+				   //registra ingreso del inspector al parquimetro en la tabla accede
+					   
+				   }
 //				   //generar la multa correspondiente
 //				   generarMultas();
 //				   
@@ -255,7 +252,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 		   if(campoPatentes.getText().isEmpty()) { //o es invalida
 			   JOptionPane.showMessageDialog(null, "De la forma: ''ABC123''", "Ingrese las patentes en el formato correcto", JOptionPane.ERROR_MESSAGE );
 		   } else {
-			   JOptionPane.showMessageDialog(null, "Felicidades", "Patentes ingresadas correctamente", JOptionPane.PLAIN_MESSAGE);
 			   //meto las patentes en un arreglo para luego trabajar con ellas
 			   String[] arregloPatentes = campoPatentes.getText().split(" ");
 			   toRet = arregloPatentes;
@@ -294,7 +290,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   JOptionPane.showMessageDialog(null, "", "Ese parquimetro no existe en esa ubicacion", JOptionPane.ERROR_MESSAGE );
 				   
 			   } else {
-				   JOptionPane.showMessageDialog(null, "Felicidades", "Datos ingresados correctamente", JOptionPane.PLAIN_MESSAGE);
 				   toRet = ubicacionParquimetro;
 			   }
 		   }
@@ -307,3 +302,4 @@ public class VentanaPrincipal extends javax.swing.JFrame
    
    
 }
+
