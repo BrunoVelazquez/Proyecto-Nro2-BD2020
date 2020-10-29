@@ -11,13 +11,13 @@ public class Logica {
 	private Connection conexionBD;
 	private Statement stmt;
 	private PreparedStatement p_stmt;
+	private int legajo_inspector;
 	
 	public Logica() {
 		lic = new LogIn_Checker();
 		conexionBD = null;
 		stmt = p_stmt = null;
-		new ArrayList<String>();
-		new ArrayList<String>();
+		legajo_inspector = 0;
 	}
 	
 	public void iniciar_sesion_admin(String clave) throws SQLException {
@@ -55,7 +55,7 @@ public class Logica {
 		}
 		if (!coincide)
 			throw new SQLException("Datos incorrectos, vuelva a intentar.");
-		
+		this.legajo_inspector = legajo;
 		rs.close();
 		p_stmt.close();
 		
@@ -196,44 +196,16 @@ public class Logica {
 	   }
 	
 	//registra en la tabla accede, que el inspector accedio al parquimetro
-	public void registrarIngresoInspector(int legajo, int parquimetro) {
+	public void registrarAccesoInspector(int parquimetro) {
+		String sql = "INSERT INTO accede (legajo, id_parq, fecha, hora) "
+					+"VALUES(?,?,CURDATE(),CURTIME())";
 		try {
-			Statement statement = conexionBD.createStatement();
-			String fecha = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); 
-			String hora = new SimpleDateFormat("HH:mm:ss").format(new Date());
-			String insert = "INSERT INTO accede (legajo, id_parq, fecha, hora) VALUES (" +legajo+ ", " +parquimetro+ ", '" +fecha+ "', '"+hora+"')";
-			System.out.println(insert);
-			statement.executeUpdate(insert);
-			
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			p_stmt= conexionBD.prepareStatement(sql);
+			p_stmt.setInt(1,this.legajo_inspector);
+			p_stmt.setInt(2,parquimetro);
+			p_stmt.executeUpdate();
+		} catch (SQLException e) {}
 	}
-	
-	
 
-	public void chequear_patente(String text) throws WrongInputException {
-		
-		String sql = "SELECT patente "
-					+"FROM estacionados "
-					+"WHERE patente = ?";
-				
-		ResultSet rs;
-		boolean existe = false;
-		try {
-			p_stmt = conexionBD.prepareStatement(sql);
-			p_stmt.setString(1,text);
-			rs = p_stmt.executeQuery();
-			
-			existe = rs.next();
-			rs.close();
-			p_stmt.close();
-			
-			if (!existe)
-				throw new WrongInputException("La patente no existe en la base de datos");
-			
-		} catch (SQLException e) {}	
-	}
 }
 

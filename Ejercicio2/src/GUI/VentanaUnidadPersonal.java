@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.JButton;
@@ -32,7 +33,7 @@ import javax.swing.text.BadLocationException;
 @SuppressWarnings("serial")
 public class VentanaUnidadPersonal extends javax.swing.JInternalFrame 
 {
-   private JTextField textFieldPatente;
+	private JTextField textFieldPatente;
    private JPanel panel_Patentes,panel_Ubicaciones_Parquimetros;
    private JScrollPane scrollPane,scrollPane_1,scrollPane_2;
    private JList<String> lista_patentes,lista_ubicaciones,lista_parquimetros;
@@ -130,9 +131,17 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          model3 = new DefaultListModel<String>();
          lista_parquimetros = new JList<String>(model3);
          scrollPane_2.setViewportView(lista_parquimetros);
+         lista_parquimetros.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (!model1.isEmpty())
+					btnRegistrarAcceso_LabrarMultas.setEnabled(true);
+			}
+        	 
+         });
          lista_ubicaciones.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				generar_parquimetros(e);
+				btnRegistrarAcceso_LabrarMultas.setEnabled(false);
 			}
          });
          lblParquimetros = new JLabel("Parquimetros:");
@@ -142,6 +151,14 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          btnRegistrarAcceso_LabrarMultas = new JButton("<html>Registrar acceso y<br/>labrar multas</html>");
          btnRegistrarAcceso_LabrarMultas.setBounds(10, 301, 142, 45);
          panel_Ubicaciones_Parquimetros.add(btnRegistrarAcceso_LabrarMultas);
+         btnRegistrarAcceso_LabrarMultas.setEnabled(false);
+         btnRegistrarAcceso_LabrarMultas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				registrar_acceso();
+				btnRegistrarAcceso_LabrarMultas.setEnabled(false);
+				model1.removeAllElements();
+			}
+         });
    }
    
    private class JTextFieldLimit extends PlainDocument {
@@ -199,21 +216,35 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
    
    private void agregar_a_lista_patentes(String text) {	   
 	   String texto_mayus = text.toUpperCase();
-	   
-	   try {
-		this.log.chequear_patente(texto_mayus);
-	   
+
 	   if (!this.model1.contains(texto_mayus))
 	   		this.model1.addElement(texto_mayus);
-	  
-	   } catch (WrongInputException e) {
-		   JOptionPane.showMessageDialog(null, "Ingrese los datos correctamente: \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-	   }
-	   finally {
-		   this.textFieldPatente.setText("");
-		   this.btnIngresarPatente.setEnabled(false);
-	   }
-	}
+	  	   
+	   this.textFieldPatente.setText("");
+	   this.btnIngresarPatente.setEnabled(false);
+	   this.lista_parquimetros.clearSelection();
+	   this.btnRegistrarAcceso_LabrarMultas.setEnabled(false);
+   }
 
-   
+	private void registrar_acceso() {
+		log.registrarAccesoInspector(Integer.parseInt(this.lista_parquimetros.getSelectedValue()));
+	}
+	
+	/*
+	 * 	PROXIMOS UPDATES
+	 * 		Cuando se presiona el boton de Registrar acceso y labrar multas, debe suceder lo siguiente
+	 * 
+	 * 			Si el inspector está asociado con la ubicación
+	 * 				Mientras hayan patentes sin comprobar en la lista
+	 * 				LabrarMultasCorrespondientes( ... )
+	 * 			Sino
+	 * 				Notificar que no puede labrar multas
+	 * 
+	 * 
+	 * 			LabrarMultasCorrespondientes( ... )
+	 * 				- Se recibe una lista de patentes
+	 * 				Si la patente no existe en la BD, el metodo INSERT a utilizar en Multas tirará error,
+	 * 				que será atrapado por la GUI, y ésta la agregará en una lista a mostrar por pantalla
+	 * 				las patentes que no existen en la BD
+	 */
 }

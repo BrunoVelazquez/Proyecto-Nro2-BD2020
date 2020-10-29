@@ -31,6 +31,10 @@ import java.awt.Font;
 public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 
 	private Logica log;
+	private JPanel pnlConsulta,panel;
+	private JScrollPane panel_consulta_texto,panel_tabla,panel_atributos;
+	private JTextArea txtConsulta;
+	private JButton btn_ejecutar;
 	private JList<String> tablas, atributos;
 	private DefaultListModel<String> model1, model2;
 	private DBTable tabla;
@@ -55,16 +59,16 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	         this.setMaximizable(true);
 	         getContentPane().setLayout(null);
 	         
-	         JPanel pnlConsulta = new JPanel();
+	         pnlConsulta = new JPanel();
 	         pnlConsulta.setBounds(0, 0, 774, 186);
 	         getContentPane().add(pnlConsulta);
 	         pnlConsulta.setLayout(null);
 	         
-	         JScrollPane panel_consulta_texto = new JScrollPane();
+	         panel_consulta_texto = new JScrollPane();
 	         panel_consulta_texto.setBounds(10, 11, 564, 174);
 	         pnlConsulta.add(panel_consulta_texto);
 	         
-	         JTextArea txtConsulta = new JTextArea();
+	         txtConsulta = new JTextArea();
 	         panel_consulta_texto.setViewportView(txtConsulta);
 	         txtConsulta.setText("SELECT * FROM inspectores");
 	         txtConsulta.setTabSize(3);
@@ -73,33 +77,21 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	         txtConsulta.setColumns(80);
 	         txtConsulta.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 	         
-	         JButton btn_ejecutar = new JButton("Ejecutar");
+	         btn_ejecutar = new JButton("Ejecutar");
 	         btn_ejecutar.addActionListener(new ActionListener() {
 	         	public void actionPerformed(ActionEvent evt) {
-	         		String consulta = txtConsulta.getText().trim();
-	         		try {         
-						ResultSet rs = log.ejecutar_sentencia(consulta);
-						if (rs != null) { //es una consulta
-							tabla.refresh(rs);
-							rs.close();
-						} else {
-							JOptionPane.showMessageDialog(null, "Información agregada/actualizada/borrada correctamente", "", JOptionPane.INFORMATION_MESSAGE );
-						}
-						log.cerrar_sentencia();												
-					} catch (SQLException e) {
-						JOptionPane.showMessageDialog(null, "Error sintático en la sentencia SQL \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-					}
+	         		ejecutar_sentencia_SQL();
 	         	}
 	         });
 	         btn_ejecutar.setBounds(584, 86, 89, 23);
 	         pnlConsulta.add(btn_ejecutar);
 	         
-	         JPanel panel = new JPanel();
+	         panel = new JPanel();
 	         panel.setBounds(10, 197, 764, 353);
 	         getContentPane().add(panel);
 	         panel.setLayout(null);
 	         
-	         JScrollPane panel_tabla = new JScrollPane();
+	         panel_tabla = new JScrollPane();
 	         panel_tabla.setBounds(534, 0, 220, 176);
 	         panel.add(panel_tabla);
 	         
@@ -113,7 +105,7 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	        	 
 	         });
 	         
-	         JScrollPane panel_atributos = new JScrollPane();
+	         panel_atributos = new JScrollPane();
 	         panel_atributos.setBounds(534, 187, 220, 155);
 	         panel.add(panel_atributos);
 	         
@@ -128,6 +120,22 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	         
 	 		
 	   }
+	   
+	   private void ejecutar_sentencia_SQL() {
+			String consulta = txtConsulta.getText().trim();
+    		try {         
+				ResultSet rs = log.ejecutar_sentencia(consulta);
+				if (rs != null) { //es una consulta
+					tabla.refresh(rs);
+					rs.close();
+				} else {
+					JOptionPane.showMessageDialog(null, "Información agregada/actualizada/borrada correctamente", "", JOptionPane.INFORMATION_MESSAGE );
+				}
+				log.cerrar_sentencia();												
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null, "Error sintático en la sentencia SQL \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+			}
+		}
 	   
 	   private void mostrar_atributos_de_tabla_seleccionada(ListSelectionEvent e) {	   
 		   if (!e.getValueIsAdjusting()) {
@@ -153,4 +161,6 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	 			model1.addElement(ite_tabla.next());
 	 		}
 	   }
+	   
+	   
 }	
