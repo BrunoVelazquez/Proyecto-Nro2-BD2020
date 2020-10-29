@@ -304,7 +304,10 @@ public class Logica {
 		try {
 			Statement st = conexionBD.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM asociado_con WHERE (legajo="+legajo_inspector+" AND calle = '"+calle+"' AND altura="+altura+")");
-			toRet = rs.getInt("id_asociado_con");
+			if(rs.next())
+				toRet = rs.getInt("id_asociado_con");
+			else
+				toRet = 0;
 			st.close();
 			rs.close();
 		} catch (SQLException e) {
