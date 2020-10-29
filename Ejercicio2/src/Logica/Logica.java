@@ -20,6 +20,14 @@ public class Logica {
 		legajo_inspector = 0;
 	}
 	
+	
+	
+	public Connection getConexionBD() {
+		return conexionBD;
+	}
+
+
+
 	public void iniciar_sesion_admin(String clave) throws SQLException {
 		conexionBD = lic.chequear_conexion_admin(clave);
 	}
