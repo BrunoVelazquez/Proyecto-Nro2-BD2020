@@ -215,5 +215,6 @@ public class Logica {
 		} catch (SQLException e) {}
 	}
 
+
 }
 
