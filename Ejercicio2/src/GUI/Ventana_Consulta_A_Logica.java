@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -121,20 +122,38 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	 		
 	   }
 	   
-	   private void ejecutar_sentencia_SQL() {
+	   private void ejecutar_sentencia_SQL() {	
 			String consulta = txtConsulta.getText().trim();
-    		try {         
+    		try {
 				ResultSet rs = log.ejecutar_sentencia(consulta);
 				if (rs != null) { //es una consulta
-					tabla.refresh(rs);
+					tabla.setConnection(log.getConexionBD());
+					tabla.setSelectSql(consulta);
+					tabla.createColumnModelFromQuery();
+					for (int i = 0; i < tabla.getColumnCount(); i++)
+			    	  {  		   		  
+			    		 if	 (tabla.getColumn(i).getType()==Types.TIME)  
+			    		 {    		 
+			    		    tabla.getColumn(i).setType(Types.CHAR);  
+			  	       	 }
+			    		 if	 (tabla.getColumn(i).getType()==Types.DATE)
+			    		 {
+			    		    tabla.getColumn(i).setDateFormat("dd/MM/YYYY");
+			    		 }
+			          }
+					tabla.refresh();
+					for (int i = 0; i < tabla.getColumnCount(); i++)
+						tabla.getColumn(i).setMinWidth(60);
 					rs.close();
 				} else {
 					JOptionPane.showMessageDialog(null, "Información agregada/actualizada/borrada correctamente", "", JOptionPane.INFORMATION_MESSAGE );
-				}
-				log.cerrar_sentencia();												
+				}												
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(null, "Error sintático en la sentencia SQL \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
 			}
+    		finally {
+    			log.cerrar_sentencia();
+    		}
 		}
 	   
 	   private void mostrar_atributos_de_tabla_seleccionada(ListSelectionEvent e) {	   

@@ -234,7 +234,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 	 * 	PROXIMOS UPDATES
 	 * 		Cuando se presiona el boton de Registrar acceso y labrar multas, debe suceder lo siguiente
 	 * 
-	 * 			Si el inspector está asociado con la ubicación
+	 * 			Si el inspector está asociado con la ubicación y es su horario laboral
 	 * 				Mientras hayan patentes sin comprobar en la lista
 	 * 				LabrarMultasCorrespondientes( ... )
 	 * 			Sino
