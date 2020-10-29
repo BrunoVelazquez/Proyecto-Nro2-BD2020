@@ -155,6 +155,9 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          btnRegistrarAcceso_LabrarMultas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				registrar_acceso();
+				String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
+				String[] arreglo = ubicacion_seleccionada.split(",");
+				log.labrarMultas(model1, arreglo[0], Integer.parseInt(arreglo[1]));
 				btnRegistrarAcceso_LabrarMultas.setEnabled(false);
 				model1.removeAllElements();
 			}
@@ -201,10 +204,11 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 	   ArrayList<String[]> ubicaciones = this.log.get_ubicaciones();
 	   Iterator<String[]> ite_ubicaciones = ubicaciones.iterator();
 	   
+	   
 	   while (ite_ubicaciones.hasNext()) {
 		   String[] calle_altura = ite_ubicaciones.next();
 		   String calle_altura_para_lista = calle_altura[0] +","+ calle_altura[1];
-		   this.model2.addElement(calle_altura_para_lista);
+		   this.model2.addElement(calle_altura_para_lista);		   
 	   }
    }
    
@@ -219,7 +223,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 
 	   if (!this.model1.contains(texto_mayus))
 	   		this.model1.addElement(texto_mayus);
-	  	   
+
 	   this.textFieldPatente.setText("");
 	   this.btnIngresarPatente.setEnabled(false);
 	   this.lista_parquimetros.clearSelection();

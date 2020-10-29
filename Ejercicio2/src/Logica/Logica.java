@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.DefaultListModel;
+
 public class Logica {
 
 	private LogIn_Checker lic;
@@ -136,10 +138,10 @@ public class Logica {
 		String sql = "SELECT calle,altura "
 					+"FROM estacionados "
 					+"ORDER BY calle";
-
+		
 		try {
 			stmt = conexionBD.createStatement();
-			ResultSet ubicaciones = stmt.executeQuery(sql);
+			ResultSet ubicaciones = stmt.executeQuery(sql);			
 			
 			while(ubicaciones.next()) {
 				String[] calle_altura = new String[2];
@@ -218,13 +220,12 @@ public class Logica {
 	
 	//Carga una multa en la BD con los parametros especificados
 	//Se inserta NULL en donde el valor seria un autoincrement
-	//Este metodo le agrega comillas a la fecha y a la hora
 	//Retorna el numero de esa multa recien cargada
-	public int cargarMulta(String fecha, String hora, String patente, int id_asociado_con) {
+	public int cargarMulta(String patente, int id_asociado_con) throws ExceptionNoExisteEnBD {
 		int toRet = 0;
 		
 		String sql = "INSERT INTO multa (numero, fecha, hora, patente, id_asociado_con) "
-				+"VALUES(NULL, '" +fecha+ "', '"+hora+"', "+patente+", "+id_asociado_con+")";
+				+"VALUES(NULL, CURDATE(), CURTIME(), '"+patente+"', "+id_asociado_con+")";
 		
 		Statement st;
 		ResultSet rs;
@@ -236,11 +237,81 @@ public class Logica {
 			st.close();
 			rs.close();
 		} catch (SQLException e) {
+			throw new ExceptionNoExisteEnBD("No existe en la BD la patente: "+patente);
+		}
+		return toRet;
+	}
+	
+	//Verifico si la patente se encuentra en la vista estacionados
+	public boolean verificarPatenteEstacionada(String patente) {
+		boolean toRet = false;
+		String sql = "SELECT patente FROM estacionados WHERE patente='"+patente+"'";
+		
+		try {
+			Statement st = conexionBD.createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			toRet = rs.next();
+			st.close();
+			rs.close();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return toRet;
 	}
-
+	
+	//Agarra todas las patentes en la lista pasada por parametro y las que esten en la base de datos, pero no en estacionados
+	//les carga una multa.
+	public void labrarMultas(DefaultListModel<String> listaPatentes, String calle, int altura) {
+		
+		ArrayList<String> patentesFallidas = new ArrayList<String>();
+		ArrayList<Integer> numeroMultasCargadas = new ArrayList<Integer>();
+		
+		//Obtengo el ID asociado del inspector con el login actual.
+		int idAsociadoInspector = obtenerIdAsociado(calle, altura);
+		if(idAsociadoInspector == 0) {
+			System.out.println("El inspector no tiene permiso para cargar multas en esta ubicacion");	
+		}
+		
+		//Recorro patente por patente de la lista pasada por parametro, y si no esta en la vista de estacionados le cargo 
+		//una multa. De haber error al cargar la multa entonces no se encontraba en la BD, por lo cual lo guardo en una lista
+		//de patentes que no estan en la BD.
+		for(int i = 0; i < listaPatentes.getSize(); i++) {
+			boolean estaEstacionada = verificarPatenteEstacionada(listaPatentes.getElementAt(i));
+			if(!estaEstacionada) {
+				try {
+					int numeroMulta = cargarMulta(listaPatentes.getElementAt(i), idAsociadoInspector);
+					numeroMultasCargadas.add(numeroMulta);
+				} catch(ExceptionNoExisteEnBD exc) {
+					patentesFallidas.add(listaPatentes.getElementAt(i));
+				}
+			}	
+		}
+		
+		//Aviso por pantalla las patentes que no se pudieron cargar
+		System.out.println("Las patentes que no se pudieron cargar fueron:");
+		for(String str : patentesFallidas)
+			System.out.println(str);
+		
+		//Muestro por pantalla los numeros de las nuevas multas que se cargaron
+		System.out.println("Los numeros de las multas nuevas son:");
+		for(Integer i : numeroMultasCargadas)
+			System.out.println(i);
+	}
+	
+	//Obtiene el id asociado al inspector logeado actualmente en la calle y altura pasada por parametro.
+	public int obtenerIdAsociado(String calle, int altura) {
+		int toRet = 0;
+		try {
+			Statement st = conexionBD.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM asociado_con WHERE (legajo="+legajo_inspector+" AND calle = '"+calle+"' AND altura="+altura+")");
+			toRet = rs.getInt("id_asociado_con");
+			st.close();
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return toRet;
+	}
 
 }
 
