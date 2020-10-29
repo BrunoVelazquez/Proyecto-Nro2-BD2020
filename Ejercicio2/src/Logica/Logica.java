@@ -233,7 +233,8 @@ public class Logica {
 			st = conexionBD.createStatement();
 			st.executeUpdate(sql);
 			rs = st.executeQuery("SELECT numero FROM multa ORDER BY numero DESC");
-			toRet = rs.getInt("numero");			
+			if(rs.next())
+				toRet = rs.getInt("numero");
 			st.close();
 			rs.close();
 		} catch (SQLException e) {
@@ -288,7 +289,7 @@ public class Logica {
 		}
 		
 		//Aviso por pantalla las patentes que no se pudieron cargar
-		System.out.println("Las patentes que no se pudieron cargar fueron:");
+		System.out.println("Las patentes que no se pudieron cargar porque no estan en la BD fueron:");
 		for(String str : patentesFallidas)
 			System.out.println(str);
 		
