@@ -219,17 +219,26 @@ public class Logica {
 	//Carga una multa en la BD con los parametros especificados
 	//Se inserta NULL en donde el valor seria un autoincrement
 	//Este metodo le agrega comillas a la fecha y a la hora
-	public void cargarMulta(String fecha, String hora, String patente, int id_asociado_con) {
+	//Retorna el numero de esa multa recien cargada
+	public int cargarMulta(String fecha, String hora, String patente, int id_asociado_con) {
+		int toRet = 0;
+		
 		String sql = "INSERT INTO multa (numero, fecha, hora, patente, id_asociado_con) "
 				+"VALUES(NULL, '" +fecha+ "', '"+hora+"', "+patente+", "+id_asociado_con+")";
 		
 		Statement st;
+		ResultSet rs;
 		try {
 			st = conexionBD.createStatement();
 			st.executeUpdate(sql);
+			rs = st.executeQuery("SELECT numero FROM multa ORDER BY numero DESC");
+			toRet = rs.getInt("numero");			
+			st.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return toRet;
 	}
 
 
