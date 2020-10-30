@@ -369,7 +369,7 @@ public class Logica {
 	private boolean esta_dentro_de_horario(String limiteInf, String limiteSup) {
 		boolean toRet = false;
 		
-		String sql = "SELECT SIGN(TIMEDIFF(CURTIME(), "+limiteInf+")) as horainf, SIGN(TIMEDIFF("+limiteSup+",CURTIME())) as horasup";
+		String sql = "SELECT SIGN(TIMEDIFF(CURTIME(), '"+limiteInf+"')) as horainf, SIGN(TIMEDIFF('"+limiteSup+"',CURTIME())) as horasup";
 		Statement stmt_aux;
 		ResultSet rs_aux;
 		try {
