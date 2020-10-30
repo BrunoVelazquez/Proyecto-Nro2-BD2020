@@ -2,13 +2,7 @@ package Logica;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
-
-import javax.swing.DefaultListModel;
-import java.time.*;
-import java.time.DayOfWeek;
 
 public class Logica {
 
@@ -269,40 +263,7 @@ public class Logica {
 		} catch (SQLException e) {}
 		return toRet;
 	}
-	
-	//Agarra todas las patentes en la lista pasada por parametro y las que esten en la base de datos, pero no en estacionados
-	//les carga una multa.
-	/*public void labrarMultas(DefaultListModel<String> listaPatentes, String calle, int altura) {
-		
-		ArrayList<String> patentesFallidas = new ArrayList<String>();
-		ArrayList<Integer> numeroMultasCargadas = new ArrayList<Integer>();
-		
-		//Recorro patente por patente de la lista pasada por parametro, y si no esta en la vista de estacionados le cargo 
-		//una multa. De haber error al cargar la multa entonces no se encontraba en la BD, por lo cual lo guardo en una lista
-		//de patentes que no estan en la BD.
-		for(int i = 0; i < listaPatentes.getSize(); i++) {
-			boolean estaEstacionada = verificarPatenteEstacionada(listaPatentes.getElementAt(i));
-			if(!estaEstacionada) {
-		/*		try {
-					int numeroMulta = cargarMulta(listaPatentes.getElementAt(i), idAsociadoInspector);
-					numeroMultasCargadas.add(numeroMulta);
-				} catch(ExceptionNoExisteEnBD exc) {
-					patentesFallidas.add(listaPatentes.getElementAt(i));
-				}
-			}	
-		}
-		
-		//Aviso por pantalla las patentes que no se pudieron cargar
-		System.out.println("Las patentes que no se pudieron cargar porque no estan en la BD fueron:");
-		for(String str : patentesFallidas)
-			System.out.println(str);
-		
-		//Muestro por pantalla los numeros de las nuevas multas que se cargaron
-		System.out.println("Los numeros de las multas nuevas son:");
-		for(Integer i : numeroMultasCargadas)
-			System.out.println(i);
-	}*/
-	
+
 	//Obtiene el id asociado al inspector logeado actualmente en la calle y altura pasada por parametro.
 	public int obtenerIdAsociado(String calle, int altura) throws SQLException{
 		int toRet = 0;
@@ -328,14 +289,13 @@ public class Logica {
 		
 		boolean le_corresponde = true;
 		int dia = 0;
-		String hora, turno, limiteInf, limiteSup = "";
-		String sql = "SELECT DAYOFWEEK(CURDATE()), CURTIME()";
+		String turno, limiteInf, limiteSup = "";
+		String sql = "SELECT DAYOFWEEK(CURDATE())";
 		
 		stmt = conexionBD.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		if(rs.next()) {
 			dia = rs.getInt(1);
-			hora = rs.getString(2);
 		}
 		
 		sql = "SELECT dia,turno "
@@ -402,7 +362,6 @@ public class Logica {
 			sql = "SELECT numero,fecha,hora,calle,altura,patente,legajo "
 					+ "FROM multa NATURAL JOIN asociado_con "
 					+ "WHERE numero = "+numero_multa+" AND id_asociado_con = "+id_asociado_con;
-		//	System.out.println(sql);
 			ResultSet rs = p_stmt.executeQuery();
 			
 			if(rs.next()) {

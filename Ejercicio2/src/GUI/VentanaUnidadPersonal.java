@@ -10,9 +10,7 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -26,7 +24,6 @@ import javax.swing.text.PlainDocument;
 
 import Logica.ExceptionNoExisteEnBD;
 import Logica.Logica;
-import Logica.WrongInputException;
 
 import javax.swing.JList;
 import javax.swing.DefaultListModel;

@@ -9,13 +9,18 @@ public class LogIn_Checker {
     	String baseDatos = "parquimetros"; 
     	String usuario = "admin";
     	String password = clave;
-        String uriConexion = "jdbc:mysql://" + servidor + "/" + 
+    	String driverMySQL = "jdbc:mysql://";
+    	String driverMariaDB = "jdbc:mariadb://";
+        String uriConexion = servidor + "/" + 
     	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
     	
-        Connection conexionBD = java.sql.DriverManager.getConnection(uriConexion, usuario, password);
-    	if (conexionBD == null)
-    		throw new SQLException("Ingrese los datos correctamente");
-    	
+        Connection conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
+        
+    	if (conexionBD == null) {
+    		conexionBD = java.sql.DriverManager.getConnection(driverMariaDB+uriConexion, usuario, password);
+    			if (conexionBD == null);
+    				throw new SQLException("No se puede accede a la base de datos.");
+    	}
     	return conexionBD;
 	}
 	
@@ -24,14 +29,19 @@ public class LogIn_Checker {
     	String baseDatos = "parquimetros"; 
     	String usuario = "inspector";
     	String password = "inspector";
-        String uriConexion = "jdbc:mysql://" + servidor + "/" + 
+    	String driverMySQL = "jdbc:mysql://";
+    	String driverMariaDB = "jdbc:mariadb://";
+        String uriConexion = servidor + "/" + 
     	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
     	
-        Connection conexionBD = java.sql.DriverManager.getConnection(uriConexion, usuario, password);
+        Connection conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
+        								
         
-    	if (conexionBD == null)
-    		throw new SQLException("No se logró conectar como Inspector");
-    	
+        if (conexionBD == null) {
+    		conexionBD = java.sql.DriverManager.getConnection(driverMariaDB+uriConexion, usuario, password);
+    			if (conexionBD == null)
+    					throw new SQLException("No se logró conectar como Inspector");
+        }
     	return conexionBD;
 	}
 

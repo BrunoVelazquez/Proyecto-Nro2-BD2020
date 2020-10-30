@@ -179,36 +179,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   this.jDesktopPane1.add(this.vup);
 				   this.vup.setMaximum(true);
 				   this.vup.setVisible(true);
-				   
-				 /*  //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
-				   String[] patentes = {};
-				   String[] ubicacionParquimetro = {};
-				   while((patentes.length == 0) && (ubicacionParquimetro.length == 0)) {
-					   patentes = mostrarIngresePatentes();
-					   ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
-				   }*/
-				   
-				   
-				   
-				   
-				   //ubicacionParquimetro[0] seria la calle 
-				   //ubicacionParquimetro[1] seria la altura
-				   //ubicacionParquimetro[2] seria el id del parquimetro
-				  /* String[] patentes = mostrarIngresePatentes();
-				   if(patentes.length != 0) {
-					   String[] ubicacionParquimetro = mostrarIngreseUbicacionParquimetro();
-					   if(ubicacionParquimetro.length != 0)
-						   //registra ingreso del inspector al parquimetro en la tabla accede
-						   logica.registrarIngresoInspector(legajo, Integer.parseInt(ubicacionParquimetro[2]));
-				   }
-				   
-//				   //generar la multa correspondiente
-//				   logica.generarMultas();
-//				   
-//				   //mostrar listado de multas labradas con:
-//				   //numero de multa, fecha, hora, calle, altura, patente del auto y legajo del inspector.
-//				   mostrarListadoMultas();
-			   */}
+			   }
 				
 				//Si el login no fue correcto 
 		   	} 	catch (PropertyVetoException e) {}  
@@ -244,71 +215,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	   
 	   return toRet;
    }
-   
-   //Muestra el cartel para que el inspector ingrese las patentes 
-   //Lo retorna en un arreglo llamado arregloPatentes[]
-   public String[] mostrarIngresePatentes() {
-	   String[] toRet = {};
-	   JTextField campoPatentes = new JTextField();
-	   Object[] message = {
-		       "Deben estar separadas por un espacio:", campoPatentes,
-	   };
-	
-	   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese las patentes", JOptionPane.OK_CANCEL_OPTION);
-		   
-	   if (res == JOptionPane.OK_OPTION) {
-		   //Verifico el contenido del JTextField
-		   if(campoPatentes.getText().isEmpty()) { //o es invalida
-			   JOptionPane.showMessageDialog(null, "De la forma: ''ABC123''", "Ingrese las patentes en el formato correcto", JOptionPane.ERROR_MESSAGE );
-		   } else {
-			   //meto las patentes en un arreglo para luego trabajar con ellas
-			   String[] arregloPatentes = campoPatentes.getText().split(" ");
-			   toRet = arregloPatentes;
-			   mostrarIngreseUbicacionParquimetro();
-		   }	   
-	   }	
-	   return toRet;
-   }
-   
-   //Muestra el cartel para que el inspector ingrese la ubicacion y el id del parquimetro 
-   //Guarda la ubicacion en ubicacionParquimetro, donde:
-   //ubicacionParquimetro[0] seria la calle 
-   //ubicacionParquimetro[1] seria la altura
-   //ubicacionParquimetro[2] seria el id del parquimetro
-   public String[] mostrarIngreseUbicacionParquimetro() {
-	   String[] toRet = {};
-	   JTextField campoUbicacion = new JTextField();
-	   JTextField campoParquimetro = new JTextField();
-	   Object[] message = {
-		       "Ingrese la ubicacion, separando la calle de la altura con un espacio:", campoUbicacion,
-		       "Ingrese el id del parquimetro:", campoParquimetro
-	   };
-	
-	   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos", JOptionPane.OK_CANCEL_OPTION);
-		   
-	   if (res == JOptionPane.OK_OPTION) {
-		   //Verifico el contenido de los campos de texto
-		   if(campoUbicacion.getText().isEmpty() || campoParquimetro.getText().isEmpty()) { //o es invalida
-			   JOptionPane.showMessageDialog(null, "", "Ingrese los datos en el formato correcto", JOptionPane.ERROR_MESSAGE );
-		   } else {  
-			   //meto los datos en un arreglo para luego trabajarlo
-			   String auxiliar = campoUbicacion.getText() + " " + campoParquimetro.getText();
-			   String[] ubicacionParquimetro = auxiliar.split(" ");
-			   boolean esValido = logica.esParquimetroValido(ubicacionParquimetro);
-			   if(!esValido) {
-				   JOptionPane.showMessageDialog(null, "", "Ese parquimetro no existe en esa ubicacion", JOptionPane.ERROR_MESSAGE );
-				   
-			   } else {
-				   toRet = ubicacionParquimetro;
-			   }
-		   }
-	   }
-	   return toRet;
-   }
-   
-   
-   
-   
-   
+  
 }
 
