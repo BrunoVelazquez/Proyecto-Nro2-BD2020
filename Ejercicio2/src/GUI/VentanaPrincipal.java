@@ -121,15 +121,13 @@ public class VentanaPrincipal extends javax.swing.JFrame
    
    private void mniConsultasActionPerformed(ActionEvent evt) {
 	  JPasswordField pass = new JPasswordField();
-	  boolean conectado = false;
-	  while (!conectado) {
 		  try {
-			  conectado = true;
 	    	  int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contraseña de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 	    	  if (res == JOptionPane.OK_OPTION) {
 	    	    String password = new String(pass.getPassword());
-	    	    logica.iniciar_sesion_admin(password);
+	    	   
+				logica.iniciar_sesion_admin(password);
 	    	    this.vcal = new Ventana_Consulta_A_Logica(logica);
 	    	    this.jDesktopPane1.add(this.vcal);
 	    	    this.vcal.generar_tabla_atributos();
@@ -137,17 +135,17 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	            this.vcal.setVisible(true);
 	    	  }
 	         
-	      } catch (PropertyVetoException e) {} 
+	      } catch (PropertyVetoException e) {}
 	      	catch (SQLException e) {
-	    	  JOptionPane.showMessageDialog(null, "Ingrese los datos correctamente \n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-	    	  conectado = false;
+	    	  JOptionPane.showMessageDialog(null, "ERROR: \n" + e.getMessage()+"\nMensaje para el administrador: "
+	    	  									+"Verifique su contraseña, ó bien, consulte por el "
+	    	  									+ "funcionamiento de la base de datos.", "", JOptionPane.ERROR_MESSAGE );
 		} finally {
 			pass.setText("");
 		}
 		  
 	  }  
  	
-   }
 
    //Accion que ocurre luego de presionar el boton de unidad personal
    private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
@@ -168,8 +166,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
 			   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos de inspector", JOptionPane.OK_CANCEL_OPTION);
 			   
 			   if (res == JOptionPane.OK_OPTION) {
-				   logica.iniciar_sesion_usuario_inspector();
 				   int legajo = this.validarCampos(nro_legajo,pass);
+				   logica.iniciar_sesion_usuario_inspector();
 				   String password = new String(pass.getPassword());
 				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
 				   JOptionPane.showMessageDialog(null, "Bienvenido: "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
@@ -182,11 +180,14 @@ public class VentanaPrincipal extends javax.swing.JFrame
 			   }
 				
 				//Si el login no fue correcto 
-		   	} 	catch (PropertyVetoException e) {}  
-	   			catch (SQLException | WrongInputException e) {
+		   	} 	catch (PropertyVetoException e) {}
+		   		catch (SQLException e) {
+		   			JOptionPane.showMessageDialog(null,e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+		   		}
+	   			catch (WrongInputException e) {
 				JOptionPane.showMessageDialog(null, "Datos erróneos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
 		  	  	conectado = false;
-		  	  	this.logica.desconectarBD();
+
 			} finally {
 				   nro_legajo.setText("");
 				   pass.setText("");

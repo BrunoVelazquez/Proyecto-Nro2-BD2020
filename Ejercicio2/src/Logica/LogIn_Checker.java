@@ -3,7 +3,7 @@ import java.sql.*;
 
 public class LogIn_Checker {
 	
-	public Connection chequear_conexion_admin(String clave) throws SQLException {
+	public Connection chequear_conexion_admin(String clave) throws SQLException{
 		
 		String servidor = "localhost:3306";
     	String baseDatos = "parquimetros"; 
@@ -13,15 +13,18 @@ public class LogIn_Checker {
     	String uriConexion = servidor + "/" + 
     	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
     	
-        Connection conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
+    	Connection conexionBD = null;
+        try {
+        	java.sql.DriverManager.setLoginTimeout(5);
+			conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
+		} catch (SQLException e) {
+			throw new SQLException("No se puede acceder a la base de datos.");
+		}
+		return conexionBD;
         
-    	if (conexionBD == null)
-    		throw new SQLException("No se puede acceder a la base de datos.");
-
-    	return conexionBD;
 	}
 	
-	public Connection iniciar_sesion_usuario_inspector() throws SQLException {
+	public Connection iniciar_sesion_usuario_inspector() throws SQLException{
 		String servidor = "localhost:3306";
     	String baseDatos = "parquimetros"; 
     	String usuario = "inspector";
@@ -30,13 +33,14 @@ public class LogIn_Checker {
     	String uriConexion = servidor + "/" + 
     	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
     	
-        Connection conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
-        								
-        
-        if (conexionBD == null)
-        	throw new SQLException("No se logró conectar como Inspector");
-        
-    	return conexionBD;
+        Connection conexionBD = null;
+		try {
+			java.sql.DriverManager.setLoginTimeout(5);
+			conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
+		} catch (SQLException e) {
+			throw new SQLException("No se puede acceder a la base de datos.");
+		}
+		return conexionBD;
 	}
 
 }

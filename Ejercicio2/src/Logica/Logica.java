@@ -30,7 +30,7 @@ public class Logica {
 		} catch (SQLException e) {}
 	}
 	
-	public void iniciar_sesion_admin(String clave) throws SQLException {
+	public void iniciar_sesion_admin(String clave) throws SQLException{
 		conexionBD = lic.chequear_conexion_admin(clave);
 	}
 	
