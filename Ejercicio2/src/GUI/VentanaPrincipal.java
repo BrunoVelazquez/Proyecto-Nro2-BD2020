@@ -54,11 +54,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
       super();
 
       initGUI();
-      logica = new Logica();
-      this.vcal = new Ventana_Consulta_A_Logica(logica);
-      this.vcal.setVisible(false);
-      this.jDesktopPane1.add(this.vcal);
-      
+      logica = new Logica();      
    }
    
    private void initGUI() 
@@ -134,9 +130,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	    	  if (res == JOptionPane.OK_OPTION) {
 	    	    String password = new String(pass.getPassword());
 	    	    logica.iniciar_sesion_admin(password);
+	    	    this.vcal = new Ventana_Consulta_A_Logica(logica);
+	    	    this.jDesktopPane1.add(this.vcal);
 	    	    this.vcal.generar_tabla_atributos();
 	            this.vcal.setMaximum(true);
-	            this.vcal.setVisible(true); 
+	            this.vcal.setVisible(true);
 	    	  }
 	         
 	      } catch (PropertyVetoException e) {} 
@@ -178,10 +176,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
 				   
 				   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
 				   this.vup = new VentanaUnidadPersonal(logica);
-				   this.vup.generar_ubicaciones();
-				   this.vup.setVisible(true);
-				   this.vcal.setMaximum(true);
 				   this.jDesktopPane1.add(this.vup);
+				   this.vup.setMaximum(true);
+				   this.vup.setVisible(true);
 				   
 				 /*  //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
 				   String[] patentes = {};
@@ -218,6 +215,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	   			catch (SQLException | WrongInputException e) {
 				JOptionPane.showMessageDialog(null, "Datos erróneos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
 		  	  	conectado = false;
+		  	  	this.logica.desconectarBD();
 			} finally {
 				   nro_legajo.setText("");
 				   pass.setText("");

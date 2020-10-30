@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -59,6 +61,11 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 	         this.setMaximizable(true);
 	         getContentPane().setLayout(null);
+	         this.addComponentListener(new ComponentAdapter() {
+	             public void componentHidden(ComponentEvent evt) {
+	                thisComponentHidden(evt);
+	             }
+	          });
 	         
 	         pnlConsulta = new JPanel();
 	         pnlConsulta.setBounds(0, 0, 774, 186);
@@ -122,6 +129,11 @@ public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 	 		
 	   }
 	   
+	   private void thisComponentHidden(ComponentEvent evt) 
+	   {
+	      this.log.desconectarBD();
+	   }
+
 	   private void ejecutar_sentencia_SQL() {	
 			String consulta = txtConsulta.getText().trim();
     		try {

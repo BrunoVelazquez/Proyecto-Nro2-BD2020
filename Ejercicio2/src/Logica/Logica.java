@@ -1,11 +1,14 @@
 package Logica;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
+import java.time.*;
+import java.time.DayOfWeek;
 
 public class Logica {
 
@@ -14,6 +17,7 @@ public class Logica {
 	private Statement stmt;
 	private PreparedStatement p_stmt;
 	private int legajo_inspector;
+	private static final String[] diaSemana = 	{"do","lu","ma","mi","ju","vi","sa"};
 	
 	public Logica() {
 		lic = new LogIn_Checker();
@@ -21,15 +25,17 @@ public class Logica {
 		stmt = p_stmt = null;
 		legajo_inspector = 0;
 	}
-	
-	
-	
+		
 	public Connection getConexionBD() {
 		return conexionBD;
 	}
 
-
-
+	public void desconectarBD() {
+		try {
+			conexionBD.close();
+		} catch (SQLException e) {}
+	}
+	
 	public void iniciar_sesion_admin(String clave) throws SQLException {
 		conexionBD = lic.chequear_conexion_admin(clave);
 	}
@@ -51,7 +57,7 @@ public class Logica {
 		while (rs.next())
 			pass_md5 = rs.getString("password");
 		
-		sql = "SELECT legajo, md5(password) as coded_pass,nombre,apellido "
+		sql = "SELECT legajo,password as coded_pass,nombre,apellido "
 			+ "FROM inspectores "
 			+ "WHERE legajo = ?";
 		
@@ -155,7 +161,6 @@ public class Logica {
 		return toRet;
 	}
 	
-	
 	public ArrayList<String> get_parquimetros_de_ubicaciones(String[] calle_altura) {
 		ArrayList<String> toRet = new ArrayList<String>();
 		
@@ -216,32 +221,39 @@ public class Logica {
 			p_stmt.executeUpdate();
 		} catch (SQLException e) {}
 	}
-	
-	
+		
 	//Carga una multa en la BD con los parametros especificados
 	//Se inserta NULL en donde el valor seria un autoincrement
 	//Retorna el numero de esa multa recien cargada
 	public int cargarMulta(String patente, int id_asociado_con) throws ExceptionNoExisteEnBD {
 		int toRet = 0;
+		ResultSet rs = null;
+		boolean estacionada = verificarPatenteEstacionada(patente);
 		
-		String sql = "INSERT INTO multa (numero, fecha, hora, patente, id_asociado_con) "
-				+"VALUES(NULL, CURDATE(), CURTIME(), '"+patente+"', "+id_asociado_con+")";
+		if (!estacionada) {
 		
-		Statement st;
-		ResultSet rs;
-		try {
-			st = conexionBD.createStatement();
-			st.executeUpdate(sql);
-			rs = st.executeQuery("SELECT numero FROM multa ORDER BY numero DESC");
-			if(rs.next())
-				toRet = rs.getInt("numero");
-			st.close();
-			rs.close();
-		} catch (SQLException e) {
-			throw new ExceptionNoExisteEnBD("No existe en la BD la patente: "+patente);
+			String sql = "INSERT INTO multa (numero, fecha, hora, patente, id_asociado_con) "
+					+"VALUES(NULL, CURDATE(), CURTIME(), '"+patente+"', "+id_asociado_con+")";
+			
+			try {
+				stmt = conexionBD.createStatement();
+				stmt.executeUpdate(sql);
+				rs = stmt.executeQuery("SELECT numero FROM multa ORDER BY numero DESC");
+				
+				if(rs.next())
+					toRet = rs.getInt("numero");
+				
+				stmt.close();
+				rs.close();
+			} catch (SQLException e) {
+				throw new ExceptionNoExisteEnBD(patente);
+			}
+			
 		}
 		return toRet;
 	}
+	
+	
 	
 	//Verifico si la patente se encuentra en la vista estacionados
 	public boolean verificarPatenteEstacionada(String patente) {
@@ -254,24 +266,16 @@ public class Logica {
 			toRet = rs.next();
 			st.close();
 			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		} catch (SQLException e) {}
 		return toRet;
 	}
 	
 	//Agarra todas las patentes en la lista pasada por parametro y las que esten en la base de datos, pero no en estacionados
 	//les carga una multa.
-	public void labrarMultas(DefaultListModel<String> listaPatentes, String calle, int altura) {
+	/*public void labrarMultas(DefaultListModel<String> listaPatentes, String calle, int altura) {
 		
 		ArrayList<String> patentesFallidas = new ArrayList<String>();
 		ArrayList<Integer> numeroMultasCargadas = new ArrayList<Integer>();
-		
-		//Obtengo el ID asociado del inspector con el login actual.
-		int idAsociadoInspector = obtenerIdAsociado(calle, altura);
-		if(idAsociadoInspector == 0) {
-			System.out.println("El inspector no tiene permiso para cargar multas en esta ubicacion");	
-		}
 		
 		//Recorro patente por patente de la lista pasada por parametro, y si no esta en la vista de estacionados le cargo 
 		//una multa. De haber error al cargar la multa entonces no se encontraba en la BD, por lo cual lo guardo en una lista
@@ -279,7 +283,7 @@ public class Logica {
 		for(int i = 0; i < listaPatentes.getSize(); i++) {
 			boolean estaEstacionada = verificarPatenteEstacionada(listaPatentes.getElementAt(i));
 			if(!estaEstacionada) {
-				try {
+		/*		try {
 					int numeroMulta = cargarMulta(listaPatentes.getElementAt(i), idAsociadoInspector);
 					numeroMultasCargadas.add(numeroMulta);
 				} catch(ExceptionNoExisteEnBD exc) {
@@ -297,25 +301,126 @@ public class Logica {
 		System.out.println("Los numeros de las multas nuevas son:");
 		for(Integer i : numeroMultasCargadas)
 			System.out.println(i);
-	}
+	}*/
 	
 	//Obtiene el id asociado al inspector logeado actualmente en la calle y altura pasada por parametro.
-	public int obtenerIdAsociado(String calle, int altura) {
+	public int obtenerIdAsociado(String calle, int altura) throws SQLException{
 		int toRet = 0;
+		
+		String sql = "SELECT * FROM asociado_con "
+					+"WHERE (legajo="+legajo_inspector+" AND calle = '"+calle+"' AND altura="+altura+")";
+		
+		stmt = conexionBD.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		if(rs.next())
+			toRet = rs.getInt("id_asociado_con");
+		else // No encuentra id_asociado_Con
+			throw new SQLException("Inspector con legajo "+legajo_inspector+" no tiene asociado dicha ubicación, no se labrarán las multas.");
+		
+		stmt.close();
+		rs.close();
+
+		return toRet;
+			
+	}
+
+	public void comprobar_dia_horario(int id_asociado_con) throws SQLException{
+		
+		boolean le_corresponde = true;
+		int dia = 0;
+		String hora, turno, limiteInf, limiteSup = "";
+		String sql = "SELECT DAYOFWEEK(CURDATE()), CURTIME()";
+		
+		stmt = conexionBD.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		if(rs.next()) {
+			dia = rs.getInt(1);
+			hora = rs.getString(2);
+		}
+		
+		sql = "SELECT dia,turno "
+					+"FROM asociado_con "
+					+"WHERE id_asociado_con = "+id_asociado_con;
+		
+		stmt = conexionBD.createStatement();
+		rs = stmt.executeQuery(sql);
+		
+		if(rs.next()) {
+			turno = rs.getString("turno");
+			if (turno.equals("M")) { 	// es turno mañana
+				limiteInf = "08:00:00";
+				limiteSup = "13:59:59";
+			} else {					// es turno tarde
+				limiteInf = "14:00:00";
+				limiteSup = "20:00:00";
+			}
+			
+			le_corresponde = rs.getString("dia").toLowerCase().equals(diaSemana[dia-1]); // dia que le corresponde
+			le_corresponde &= esta_dentro_de_horario(limiteInf,limiteSup);
+		}
+		
+		rs.close();
+		stmt.close();
+		if (!le_corresponde)
+			throw new SQLException("No le corresponde el día y/o el turno actual, no se labrarán las multas.");
+		
+	}
+
+	private boolean esta_dentro_de_horario(String limiteInf, String limiteSup) {
+		boolean toRet = false;
+		
+		String sql = "SELECT SIGN(TIMEDIFF(CURTIME(), "+limiteInf+")) as horainf, SIGN(TIMEDIFF("+limiteSup+",CURTIME())) as horasup";
+		Statement stmt_aux;
+		ResultSet rs_aux;
 		try {
-			Statement st = conexionBD.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM asociado_con WHERE (legajo="+legajo_inspector+" AND calle = '"+calle+"' AND altura="+altura+")");
-			if(rs.next())
-				toRet = rs.getInt("id_asociado_con");
-			else
-				toRet = 0;
-			st.close();
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}		
+			stmt_aux = conexionBD.createStatement();
+			rs_aux = stmt_aux.executeQuery(sql);
+			
+			if (rs_aux.next()) {
+				toRet = (rs_aux.getInt(1) > 0) && (rs_aux.getInt(2) > 0); // esta dentro del horario
+			}
+			
+			rs_aux.close();
+			stmt_aux.close();
+		} catch (SQLException e) {}
+
 		return toRet;
 	}
 
+	
+	public Vector<String> get_datos_multa(int numero_multa, int id_asociado_con) {
+		Vector<String> toRet = new Vector<String>(7,0);
+		
+		String sql = "SELECT numero,fecha,hora,calle,altura,patente,legajo "
+				+ "FROM multa NATURAL JOIN asociado_con "
+				+ "WHERE numero = ? AND id_asociado_con = ?";
+
+		try {
+			p_stmt = conexionBD.prepareStatement(sql);
+			p_stmt.setString(1,""+numero_multa);
+			p_stmt.setString(2,""+id_asociado_con);
+			sql = "SELECT numero,fecha,hora,calle,altura,patente,legajo "
+					+ "FROM multa NATURAL JOIN asociado_con "
+					+ "WHERE numero = "+numero_multa+" AND id_asociado_con = "+id_asociado_con;
+		//	System.out.println(sql);
+			ResultSet rs = p_stmt.executeQuery();
+			
+			if(rs.next()) {
+				toRet.addElement(rs.getString(1));
+				toRet.addElement(rs.getString(2));
+				toRet.addElement(rs.getString(3));
+				toRet.addElement(rs.getString(4));
+				toRet.addElement(rs.getString(5));
+				toRet.addElement(rs.getString(6));
+				toRet.addElement(rs.getString(7));
+			}
+			rs.close();
+			p_stmt.close();
+		} catch (SQLException e) {}
+		
+		return toRet;
+		
+	}
+	
 }
 

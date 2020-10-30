@@ -23,6 +23,7 @@ INSERT INTO conductores(dni, nombre, apellido, direccion, telefono, registro) VA
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ABC123", "Audi", "A4", "Negro", 12547879);
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ZDS879", "Chevrolet", "Spark", "Blanco", 10458744);
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("RGA879", "Citroen", "C4", "Gris", 40578954);
+INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ABD124", "LOQUESE", "BLABA", "jaksf", 40578954);
 
 INSERT INTO tipos_tarjeta(tipo, descuento) VALUES("Silver", 0.05);
 INSERT INTO tipos_tarjeta(tipo, descuento) VALUES("Premium", 0.3);
@@ -32,9 +33,9 @@ INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(1212, 450.01, "Sil
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(5487, 870.95, "Silver", "ZDS879");
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(6598, 140.15, "Diamond", "RGA879");
 
-INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(12, 15487612, "Ricardo", "Carlisa", "pass1");
-INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(13, 15487612, "Omar", "Donofrio", "pass2");
-INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(14, 15487612, "Alan", "Schen", "pass3");
+INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(12, 15487612, "Ricardo", "Carlisa", md5("pass1"));
+INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(13, 15487612, "Omar", "Donofrio", md5("pass2"));
+INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(14, 15487612, "Alan", "Schen", md5("pass3"));
 
 INSERT INTO ubicaciones(calle, altura, tarifa) VALUES("Almafuerte", 1000, 100.15);
 INSERT INTO ubicaciones(calle, altura, tarifa) VALUES("Colon", 200, 150.05);
