@@ -1,7 +1,12 @@
 package Logica;
 
 import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Vector;
 
 public class Logica {
@@ -268,8 +273,50 @@ public class Logica {
 	public int obtenerIdAsociado(String calle, int altura) throws SQLException{
 		int toRet = 0;
 		
+		//Consigo el dia actual
+		LocalDate date = LocalDate.now();
+		DayOfWeek dow = date.getDayOfWeek();
+		String dayName = dow.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+		String dia = "lu"; //Inicializo por defecto en lunes.
+		switch (dayName) {
+			case "Monday" :
+				dia = "lu";
+				break;
+			case "Tuesday" :
+				dia = "ma";
+				break;
+			case "Wednesday" :
+				dia = "mi";
+				break;
+			case "Thursday" :
+				dia = "ju";
+				break;
+			case "Friday" :
+				dia = "vi";
+				break;
+			case "Saturday" :
+				dia = "sa";
+				break;
+			case "Sunday" :
+				dia = "do";
+				break;
+		}
+
+		//Consigo el turno actual
+		Calendar rightNow = Calendar.getInstance();
+		int hora = rightNow.get(Calendar.HOUR_OF_DAY); //hour da la hora actual (sin min ni seg)
+		
+		String turno = "M"; //inicializa en M por default
+		if((hora >= 14) && (hora <=20)) {
+			turno = "T";
+		} else {
+			if(hora >= 8 && hora <=14) {
+				turno = "M";
+			}
+		}
+		
 		String sql = "SELECT * FROM asociado_con "
-					+"WHERE (legajo="+legajo_inspector+" AND calle = '"+calle+"' AND altura="+altura+")";
+					+"WHERE (turno = '"+turno+"' AND dia = '"+dia+"' AND legajo="+legajo_inspector+" AND calle = '"+calle+"' AND altura="+altura+")";
 		
 		stmt = conexionBD.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
@@ -280,7 +327,6 @@ public class Logica {
 		
 		stmt.close();
 		rs.close();
-
 		return toRet;
 			
 	}
@@ -315,7 +361,7 @@ public class Logica {
 				limiteSup = "20:00:00";
 			}
 			
-			le_corresponde = rs.getString("dia").toLowerCase().equals(diaSemana[dia-1]); // dia que le corresponde
+			le_corresponde = rs.getString("dia").toLowerCase().equals(diaSemana[dia-1]);
 			le_corresponde &= esta_dentro_de_horario(limiteInf,limiteSup);
 		}
 		
