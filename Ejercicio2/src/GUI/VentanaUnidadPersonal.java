@@ -23,6 +23,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.PlainDocument;
 
 import Logica.ExceptionNoExisteEnBD;
+import Logica.ExceptionYaEstacionada;
 import Logica.Logica;
 
 import javax.swing.JList;
@@ -292,6 +293,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 		
 		ArrayList<String> patentes = new ArrayList<String>();
 		ArrayList<String> patentes_no_existentes = new ArrayList<String>();
+		ArrayList<String> patentes_ya_estacionadas = new ArrayList<String>();
 		ArrayList<Integer> numeros_multas = new ArrayList<Integer>();
 		
 		for(int i = 0; i < model1.getSize(); i++) {
@@ -305,11 +307,16 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 				numeros_multas.add(log.cargarMulta(ite_patentes.next(), calle, altura, id_asociado_con));
 			} catch (ExceptionNoExisteEnBD e) {
 				patentes_no_existentes.add(e.getMessage());
+			} catch(ExceptionYaEstacionada e) {
+				patentes_ya_estacionadas.add(e.getMessage());
+
 			}
 		}
 		
 		if (!patentes_no_existentes.isEmpty())
 			mostrar_patentes_no_existentes(patentes_no_existentes);
+		if (!patentes_ya_estacionadas.isEmpty())
+			mostrar_patentes_ya_estacionadas(patentes_ya_estacionadas);
 		
 		return numeros_multas;
 	}
@@ -323,6 +330,17 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 			mensaje_a_mostrar += ite_patentes_no_existentes.next() +"\n";
 		
 		JOptionPane.showMessageDialog(null, mensaje_a_mostrar, "Patentes no registradas en el sistema", JOptionPane.ERROR_MESSAGE );
+	}
+	
+	private void mostrar_patentes_ya_estacionadas(ArrayList<String> patentes_ya_estacionadas) {
+		String mensaje_a_mostrar = "";
+		
+		Iterator<String> ite_patentes_ya_estacionadas = patentes_ya_estacionadas.iterator();
+		
+		while (ite_patentes_ya_estacionadas.hasNext())
+			mensaje_a_mostrar += ite_patentes_ya_estacionadas.next() +"\n";
+		
+		JOptionPane.showMessageDialog(null, mensaje_a_mostrar, "Patentes ya estacionadas en el sistema", JOptionPane.ERROR_MESSAGE );
 	}
 	
 	private void mostrar_en_tabla(int id_asociado_con, ArrayList<Integer> lista_numero_multas/*, String[] arreglo*/) {

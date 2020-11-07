@@ -224,7 +224,7 @@ public class Logica {
 	//Carga una multa en la BD con los parametros especificados
 	//Se inserta NULL en donde el valor seria un autoincrement
 	//Retorna el numero de esa multa recien cargada
-	public int cargarMulta(String patente, String calle, int altura, int id_asociado_con) throws ExceptionNoExisteEnBD {
+	public int cargarMulta(String patente, String calle, int altura, int id_asociado_con) throws ExceptionNoExisteEnBD, ExceptionYaEstacionada {
 		int toRet = 0;
 		ResultSet rs = null;
 		boolean estacionada = verificarPatenteEstacionada(patente, calle, altura);
@@ -245,9 +245,12 @@ public class Logica {
 				stmt.close();
 				rs.close();
 			} catch (SQLException e) {
+				System.out.println("llege");
 				throw new ExceptionNoExisteEnBD(patente);
 			}
 			
+		} else {
+			throw new ExceptionYaEstacionada(patente);
 		}
 		return toRet;
 	}
