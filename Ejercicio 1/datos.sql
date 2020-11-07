@@ -23,7 +23,6 @@ INSERT INTO conductores(dni, nombre, apellido, direccion, telefono, registro) VA
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ABC123", "Audi", "A4", "Negro", 12547879);
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ZDS879", "Chevrolet", "Spark", "Blanco", 10458744);
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("RGA879", "Citroen", "C4", "Gris", 40578954);
-INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ABD124", "LOQUESE", "BLABA", "jaksf", 40578954);
 
 INSERT INTO tipos_tarjeta(tipo, descuento) VALUES("Silver", 0.05);
 INSERT INTO tipos_tarjeta(tipo, descuento) VALUES("Premium", 0.3);

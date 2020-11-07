@@ -1,0 +1,30 @@
+Comisión Kraus - Velazquez
+--------------------------
+Creacion de BD: Ok
+
+Verificar: Ok
+
+Vista: Ok
+
+Admin: Ok
+
+Inspector:
+- Labrar multas: 
+En las listas de ubicaciones y parquimetros se cargan entradas repetidas. Fijense de corregir esto. //CORREGIDO
+
+No pude generar multas para un inspector en un dia y horario valido.
+Les paso nuestros datos de prueba para que corrijan con el siguiente ejemplo:
+1) Logearse con el inspector 10 (puede labrar multas cualquier dia en turno mañana 8hs a 14sh y turno tarde 14hs a 20hs)
+2) Seleccionar ubicacion Alem 300 y parquimetro 301
+3) Ingresar patentes: AAA333, AAA444, AAA555, AAA666, AAA888
+4) Deberian mostrar que se labraron multas solo para AAA555, AAA666, AAA888. No deberian labrar multa para AAA333 y AAA444 que tienen
+un estacionamiento abierto en esta ubicacion.
+ 
+- Intentar labrar multas en ubicacion no permitida: Ok
+
+- Intentar labrar multa en un dia no habilitado: Ok
+
+- Interfaz: Muy bien
+  
+  
+   

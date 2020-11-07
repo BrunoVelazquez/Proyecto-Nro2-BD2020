@@ -135,7 +135,7 @@ public class Logica {
 	public ArrayList<String[]> get_ubicaciones(){
 		
 		ArrayList<String[]> toRet = new ArrayList<String[]>();
-		String sql = "SELECT calle,altura "
+		String sql = "SELECT DISTINCT calle,altura "
 					+"FROM estacionados "
 					+"ORDER BY calle";
 		
@@ -158,7 +158,7 @@ public class Logica {
 	public ArrayList<String> get_parquimetros_de_ubicaciones(String[] calle_altura) {
 		ArrayList<String> toRet = new ArrayList<String>();
 		
-		String sql = "SELECT id_parq "
+		String sql = "SELECT DISTINCT id_parq "
 					+"FROM estacionados NATURAL JOIN parquimetros "
 					+"WHERE calle = ? AND altura = ?";
 		
