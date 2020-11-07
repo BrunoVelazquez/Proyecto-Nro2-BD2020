@@ -224,10 +224,10 @@ public class Logica {
 	//Carga una multa en la BD con los parametros especificados
 	//Se inserta NULL en donde el valor seria un autoincrement
 	//Retorna el numero de esa multa recien cargada
-	public int cargarMulta(String patente, int id_asociado_con) throws ExceptionNoExisteEnBD {
+	public int cargarMulta(String patente, String calle, int altura, int id_asociado_con) throws ExceptionNoExisteEnBD {
 		int toRet = 0;
 		ResultSet rs = null;
-		boolean estacionada = verificarPatenteEstacionada(patente);
+		boolean estacionada = verificarPatenteEstacionada(patente, calle, altura);
 		
 		if (!estacionada) {
 		
@@ -254,10 +254,10 @@ public class Logica {
 	
 	
 	
-	//Verifico si la patente se encuentra en la vista estacionados
-	public boolean verificarPatenteEstacionada(String patente) {
+	//Verifico si la patente se encuentra en la vista estacionados en esa calle y altura
+	public boolean verificarPatenteEstacionada(String patente, String calle, int altura) {
 		boolean toRet = false;
-		String sql = "SELECT patente FROM estacionados WHERE patente='"+patente+"'";
+		String sql = "SELECT patente FROM estacionados WHERE (patente='"+patente+"' AND calle = '"+calle+"' AND altura = "+altura+")";
 		
 		try {
 			Statement st = conexionBD.createStatement();

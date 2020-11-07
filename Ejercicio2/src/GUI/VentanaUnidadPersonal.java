@@ -302,7 +302,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 		
 		while (ite_patentes.hasNext()) {
 			try {
-				numeros_multas.add(log.cargarMulta(ite_patentes.next(), id_asociado_con));
+				numeros_multas.add(log.cargarMulta(ite_patentes.next(), calle, altura, id_asociado_con));
 			} catch (ExceptionNoExisteEnBD e) {
 				patentes_no_existentes.add(e.getMessage());
 			}
