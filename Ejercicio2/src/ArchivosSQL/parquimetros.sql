@@ -297,3 +297,41 @@ CREATE TABLE multa
     
     GRANT SELECT ON parquimetros.asociado_con TO 'inspector'@'%';
 
+#------------------------------------------------------------------
+
+    # PROYECTO 3
+
+
+# --------- Punto 3 ----------
+
+CREATE TABLE ventas
+(
+    id_tarjeta INT UNSIGNED NOT NULL,
+    tipo_tarjeta VARCHAR(45) NOT NULL,
+    saldo DECIMAL(5,2) NOT NULL DEFAULT 0,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+
+    CONSTRAINT pk_ventas
+    PRIMARY KEY (id_tarjeta,tipo_tarjeta),
+
+    CONSTRAINT fk_ventas_tarjetas
+    FOREIGN KEY (id_tarjeta) REFERENCES tarjetas(id_tarjeta)
+        ON DELETE RESTRICT ON UPDATE RESTRICT,
+
+    CONSTRAINT fk_ventas_tipos_tarjeta
+    FOREIGN KEY (tipo_tarjeta) REFERENCES tipos_tarjeta(tipo)
+        ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB;
+
+
+delimiter !
+
+CREATE TRIGGER nueva_tarjeta
+AFTER INSERT ON tarjetas
+FOR EACH ROW
+BEGIN
+    INSERT INTO ventas VALUES (NEW.id_tarjeta,NEW.tipo,NEW.saldo,CURDATE(),CURTIME());
+END; !
+
+delimiter ;
