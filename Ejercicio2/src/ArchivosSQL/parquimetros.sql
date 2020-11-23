@@ -308,6 +308,7 @@ CREATE TABLE multa
 	BEGIN
 	
 	DECLARE salida TIME;
+	DECLARE entrada TIME;
 	DECLARE descuentoTarjeta DECIMAL(3,2); #Variable donde guardo el descuento de la tarjeta pasada por parametro
 	DECLARE tarifaUbicacion DECIMAL(5,2); #Variable donde guardo el costo de la ubicacion del parquimetro pasado por parametro
 	DECLARE fechaEntrada DATE;
@@ -329,8 +330,10 @@ CREATE TABLE multa
 	SELECT descuento INTO descuentoTarjeta FROM tipos_tarjeta NATURAL JOIN tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
 	SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);	
 	SELECT hora_sal INTO salida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) FOR UPDATE;
-	#Si salida es nula, significa que estoy cerrando el estacionamiento, caso contrario lo estoy abriendo.
-	IF(salida IS NULL) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
+	SELECT hora_ent INTO entrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) FOR UPDATE;
+
+	#Si salida es nula y la entrada no, significa que estoy cerrando el estacionamiento, caso contrario lo estoy abriendo.
+	IF(salida IS NULL) AND (entrada IS NOT NULL) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
 		
 		UPDATE estacionamientos SET fecha_sal = curdate() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
 		UPDATE estacionamientos SET hora_sal = curtime() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
