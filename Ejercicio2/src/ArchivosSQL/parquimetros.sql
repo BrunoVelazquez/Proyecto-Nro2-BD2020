@@ -301,6 +301,79 @@ CREATE TABLE multa
 
     # PROYECTO 3
 
+# --------- Punto 1 ----------
+
+	delimiter !
+	CREATE PROCEDURE conectar(IN id_tarjeta INTEGER , IN id_parq INTEGER) #Simula la conexión de la tarjeta id_tarjeta al parquimetro id_parq
+	BEGIN
+	
+	DECLARE salida TIME;
+	DECLARE descuentoTarjeta DECIMAL(3,2); #Variable donde guardo el descuento de la tarjeta pasada por parametro
+	DECLARE tarifaUbicacion DECIMAL(5,2); #Variable donde guardo el costo de la ubicacion del parquimetro pasado por parametro
+	DECLARE fechaEntrada DATE;
+	DECLARE horaEntrada TIME;
+	DECLARE tiempo INTEGER;
+	DECLARE saldoActual DECIMAL(5, 2);
+	
+	DECLARE codigo_SQL CHAR(5) DEFAULT '00000';
+	DECLARE codigo_MYSQL INT DEFAULT 0;
+	DECLARE mensaje_error TEXT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		GET DIAGNOSTICS CONDITION 1 codigo_MYSQL= MYSQL_ERRNO, codigo_SQL= RETURNED_SQLSTATE, mensaje_error= MESSAGE_TEXT;
+		SELECT 'SQLEXCEPTION!, transaccion abortada' AS resultado, codigo_MySQL, codigo_SQL, mensaje_error;
+		ROLLBACK;
+	END;
+	
+	START TRANSACTION;
+	SELECT descuento INTO descuentoTarjeta FROM tipos_tarjeta NATURAL JOIN tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
+	SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);	
+	SELECT hora_sal INTO salida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) FOR UPDATE;
+	#Si salida es nula, significa que estoy cerrando el estacionamiento, caso contrario lo estoy abriendo.
+	IF(salida IS NULL) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
+		
+		UPDATE estacionamientos SET fecha_sal = curdate() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
+		UPDATE estacionamientos SET hora_sal = curtime() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
+		
+		#Defino a la variable tiempo como la diferencia de tiempo en minutos desde la fecha actual y la fecha en la que se estaciono
+		
+		SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
+		SELECT hora_ent INTO horaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
+		
+		SET tiempo = TIMESTAMPDIFF(minute, TIMESTAMP(fechaEntrada, horaEntrada), TIMESTAMP(curdate(), curtime())); #Diferencia en minutos
+		
+		UPDATE tarjetas SET saldo = GREATEST(saldo-(tiempo*tarifaUbicacion*(1-descuentoTarjeta)), -999.99) WHERE (tarjetas.id_tarjeta = id_tarjeta);
+		
+		#Muestro por pantalla el cierre del estacionamiento
+		SELECT 'Cierre exitoso' AS Operacion_Realizada;
+		SELECT tiempo as Tiempo_en_minutos;
+		SELECT saldo AS Saldo_nuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
+	
+	ELSE #La salida no es nula. Si el saldo de la tarjeta es > 0 se abre un nuevo estacionamiento para la tarjeta y parq involucrados, tomando como fecha y hora de entrada la fecha y hora actual.
+		
+		SELECT saldo INTO saldoActual FROM tarjetas WHERE tarjetas.id_tarjeta=id_tarjeta;
+		IF(saldoActual > 0) THEN
+			INSERT INTO estacionamientos VALUES(id_tarjeta, id_parq, curdate(), curtime(), NULL, NULL);
+			SELECT 'Apertura exitosa' AS Operacion;
+			SELECT saldoActual/(tarifaUbicacion*(1-descuentoTarjeta)) AS Minutos_disponibles_para_estar_estacionado;
+		ELSE #Muestro error de que no tiene saldo
+			SELECT 'Saldo insuficiente para abrir un parquimetro' AS Error;
+		END IF;
+	END IF;
+	COMMIT;
+	END; !
+	delimiter ;
+
+# --------- Punto 2 ----------
+
+# Creación del usuario parquimetro
+    # Nombre: parquimetro
+    # Accesible desde cualquier computadora conectada al servidor
+    # Contraseña del usuario: parq
+
+    CREATE USER 'parquimetro'@'%' IDENTIFIED BY 'parq';
+	
+	GRANT EXECUTE ON PROCEDURE parquimetros.conectar to parquimetro;
 
 # --------- Punto 3 ----------
 
