@@ -43,4 +43,23 @@ public class LogIn_Checker {
 		return conexionBD;
 	}
 
+	public Connection iniciar_sesion_usuario_parquimetro() throws SQLException {
+		String servidor = "localhost:3306";
+    	String baseDatos = "parquimetros"; 
+    	String usuario = "parquimetro";
+    	String password = "parq";
+    	String driverMySQL = "jdbc:mysql://";
+    	String uriConexion = servidor + "/" + 
+    	                     baseDatos +"?serverTimezone=America/Argentina/Buenos_Aires";
+    	
+        Connection conexionBD = null;
+		try {
+			java.sql.DriverManager.setLoginTimeout(5);
+			conexionBD = java.sql.DriverManager.getConnection(driverMySQL+uriConexion, usuario, password);
+		} catch (SQLException e) {
+			throw new SQLException("No se puede acceder a la base de datos.");
+		}
+		return conexionBD;
+	}
+
 }

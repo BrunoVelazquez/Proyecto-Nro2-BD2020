@@ -43,6 +43,10 @@ public class Logica {
 		conexionBD = lic.iniciar_sesion_usuario_inspector();
 	}
 	
+	public void iniciar_sesion_usuario_parquimetro() throws SQLException{
+		conexionBD = lic.iniciar_sesion_usuario_parquimetro();
+	}
+ 	
 	public String iniciar_sesion_inspector(int legajo, String contrasenia) throws SQLException {
 		
 		boolean coincide = false;
@@ -137,11 +141,11 @@ public class Logica {
 		return toRet;
 	}
 	
-	public ArrayList<String[]> get_ubicaciones(){
+	public ArrayList<String[]> get_ubicaciones(String tabla){
 		
 		ArrayList<String[]> toRet = new ArrayList<String[]>();
 		String sql = "SELECT DISTINCT calle,altura "
-					+"FROM estacionados "
+					+"FROM "+tabla+" "
 					+"ORDER BY calle";
 		
 		try {
@@ -160,11 +164,11 @@ public class Logica {
 		return toRet;
 	}
 	
-	public ArrayList<String> get_parquimetros_de_ubicaciones(String[] calle_altura) {
+	public ArrayList<String> get_parquimetros_de_ubicaciones(String[] calle_altura,String tabla) {
 		ArrayList<String> toRet = new ArrayList<String>();
 		
 		String sql = "SELECT DISTINCT id_parq "
-					+"FROM estacionados NATURAL JOIN parquimetros "
+					+"FROM "+tabla+" NATURAL JOIN parquimetros "
 					+"WHERE calle = ? AND altura = ?";
 		
 		try {
@@ -428,6 +432,49 @@ public class Logica {
 		
 		return toRet;
 		
+	}
+
+	public ArrayList<String> get_tarjetas() {
+		ArrayList<String> toRet = new ArrayList<String>();
+		
+		String sql = "SELECT id_tarjeta "
+					+"FROM tarjetas "
+					+"ORDER BY id_tarjeta";
+		
+		try {
+			p_stmt = conexionBD.prepareStatement(sql);
+			ResultSet tarjetas = p_stmt.executeQuery();
+			
+			while(tarjetas.next()) {
+				toRet.add(tarjetas.getString("id_tarjeta"));
+			}
+			p_stmt.close();
+			tarjetas.close();
+		} catch (SQLException e) {}
+		
+		return toRet;
+	}
+
+	public String conectar(String tarjeta, String parquimetro) throws SQLException {
+		String toRet = "";
+		String sql = "CALL conectar(?,?)";
+		
+		p_stmt = conexionBD.prepareStatement(sql);
+		p_stmt.setString(1,tarjeta);
+		p_stmt.setString(2,parquimetro);
+		
+		ResultSet res = p_stmt.executeQuery();
+		ResultSetMetaData res_metadata = res.getMetaData();
+		int columnas = res_metadata.getColumnCount();
+		
+		if (res.next()) {
+			for (int i=1 ; i<=columnas; i++) {
+				toRet += res_metadata.getColumnLabel(i)+": "+res.getString(i)+"\n\n";
+			}	
+		}
+		toRet = toRet.replaceAll("_"," ");
+		
+		return toRet;
 	}
 	
 }

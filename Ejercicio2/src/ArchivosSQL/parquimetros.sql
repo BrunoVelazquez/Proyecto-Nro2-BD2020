@@ -348,17 +348,15 @@ CREATE TABLE multa
 		UPDATE tarjetas SET saldo = GREATEST(saldo-(tiempo*tarifaUbicacion*(1-descuentoTarjeta)), -999.99) WHERE (tarjetas.id_tarjeta = id_tarjeta);
 		
 		#Muestro por pantalla el cierre del estacionamiento
-		SELECT 'Cierre exitoso' AS Operacion_Realizada;
-		SELECT tiempo as Tiempo_en_minutos;
-		SELECT saldo AS Saldo_nuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
+		SELECT 'Cierre exitoso' AS Operacion_Realizada, tiempo as Tiempo_en_minutos, saldo AS Saldo_nuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
+		#SELECT saldo AS Saldo_nuevo ;
 	
 	ELSE #La salida no es nula. Si el saldo de la tarjeta es > 0 se abre un nuevo estacionamiento para la tarjeta y parq involucrados, tomando como fecha y hora de entrada la fecha y hora actual.
 		
 		SELECT saldo INTO saldoActual FROM tarjetas WHERE tarjetas.id_tarjeta=id_tarjeta;
 		IF(saldoActual > 0) THEN
 			INSERT INTO estacionamientos VALUES(id_tarjeta, id_parq, curdate(), curtime(), NULL, NULL);
-			SELECT 'Apertura exitosa' AS Operacion;
-			SELECT saldoActual/(tarifaUbicacion*(1-descuentoTarjeta)) AS Minutos_disponibles_para_estar_estacionado;
+			SELECT 'Apertura exitosa' AS Operacion, saldoActual/(tarifaUbicacion*(1-descuentoTarjeta)) AS Minutos_disponibles_para_estar_estacionado;
 		ELSE #Muestro error de que no tiene saldo
 			SELECT 'Saldo insuficiente para abrir un parquimetro' AS Error;
 		END IF;
@@ -376,8 +374,10 @@ CREATE TABLE multa
 
     CREATE USER 'parquimetro'@'%' IDENTIFIED BY 'parq';
 	
-	GRANT EXECUTE ON PROCEDURE parquimetros.conectar to parquimetro;
-
+    GRANT EXECUTE ON PROCEDURE parquimetros.conectar to 'parquimetro'@'%';
+    GRANT SELECT ON parquimetros.ubicaciones to 'parquimetro'@'%';
+    GRANT SELECT ON parquimetros.parquimetros to 'parquimetro'@'%';
+    GRANT SELECT ON parquimetros.tarjetas to 'parquimetro'@'%';
 # --------- Punto 3 ----------
 
 CREATE TABLE ventas

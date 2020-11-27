@@ -28,12 +28,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	private Logica logica;
    private Ventana_Consulta_A_Logica vcal;
    private VentanaUnidadPersonal vup;
-   
+   private VentanaParquimetro vp;
    
    private JDesktopPane jDesktopPane1;
    private JMenuBar jMenuBar1;
-   private JMenuItem mniConsultas, mniUnidadPersonal;
-   private JMenu menuAdmin, menuInspector;
+   private JMenuItem mniConsultas, mniUnidadPersonal, mniConectar;
+   private JMenu menuAdmin, menuInspector, menuParq;
 
    /**
    * Auto-generated main method to display this JFrame
@@ -104,6 +104,24 @@ public class VentanaPrincipal extends javax.swing.JFrame
                    mniUnidadPersonal = new JMenuItem();
                    menuInspector.add(mniUnidadPersonal);
                    mniUnidadPersonal.setText("Unidad Personal");
+                   {
+                   	menuParq = new JMenu();
+                   	menuParq.setText("Parquimetro");
+                   	jMenuBar1.add(menuParq);
+                   	
+                   	
+                   	{
+                   		mniConectar = new JMenuItem();
+                   		mniConectar.setText("Conexi\u00F3n de una tarjeta");
+                   		menuParq.add(mniConectar);
+                   		mniConectar.addActionListener(new ActionListener() {
+                   			public void actionPerformed(ActionEvent evt) {
+                   				mniConectarActionPermformed(evt);
+                   			}
+
+                   		});
+                   	}
+                   }
                    mniUnidadPersonal.addActionListener(new ActionListener() {
                       public void actionPerformed(ActionEvent evt) {
                          mniUnidadPersonalActionPerformed(evt);
@@ -146,7 +164,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 		  
 	  }  
  	
-
    //Accion que ocurre luego de presionar el boton de unidad personal
    private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
 	   
@@ -196,6 +213,20 @@ public class VentanaPrincipal extends javax.swing.JFrame
 	   }
 
 	   
+   }
+   
+   private void mniConectarActionPermformed(ActionEvent evt) {
+	   try {
+		   logica.iniciar_sesion_usuario_parquimetro();
+		   vp = new VentanaParquimetro(logica);
+		   this.jDesktopPane1.add(this.vp);
+		   this.vp.setMaximum(true);
+		   this.vp.setVisible(true);
+	   }
+	   catch (PropertyVetoException e) {}
+	   catch (SQLException e) {
+		   JOptionPane.showMessageDialog(null,e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+	   } 
    }
    
    private int validarCampos(JTextField nro_legajo, JPasswordField pass) throws WrongInputException{

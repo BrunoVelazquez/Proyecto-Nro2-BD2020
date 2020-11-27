@@ -39,14 +39,14 @@ import quick.dbtable.DBTable;
 public class VentanaUnidadPersonal extends javax.swing.JInternalFrame 
 {
 	private JTextField textFieldPatente;
-   private JPanel panel_Patentes,panel_Ubicaciones_Parquimetros,panel_Multas;
-   private JScrollPane scrollPane,scrollPane_1,scrollPane_2;
-   private JList<String> lista_patentes,lista_ubicaciones,lista_parquimetros;
-   private DefaultListModel<String> model1,model2,model3;
-   private JLabel lblPatente,lblListaPatentes,lblUbicaciones,lblParquimetros,lbl_multas;
-   private JButton btnIngresarPatente,btnRegistrarAcceso_LabrarMultas;
-   private DBTable tabla;
-   private Logica log;
+	private JPanel panel_Patentes,panel_Ubicaciones_Parquimetros,panel_Multas;
+	private JScrollPane scrollPane,scrollPane_1,scrollPane_2;
+   	private JList<String> lista_patentes,lista_ubicaciones,lista_parquimetros;
+   	private DefaultListModel<String> model1,model2,model3;
+   	private JLabel lblPatente,lblListaPatentes,lblUbicaciones,lblParquimetros,lbl_multas;
+   	private JButton btnIngresarPatente,btnRegistrarAcceso_LabrarMultas;
+   	private DBTable tabla;
+   	private Logica log;
    
    	public VentanaUnidadPersonal(Logica logica) 
    {
@@ -232,7 +232,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 			model3.removeAllElements();
 			String id_parq = "";
 			String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
-			ArrayList<String> parquimetros = log.get_parquimetros_de_ubicaciones(ubicacion_seleccionada.split(","));
+			ArrayList<String> parquimetros = log.get_parquimetros_de_ubicaciones(ubicacion_seleccionada.split(","),"estacionados");
 			
 			Iterator<String> ite_parquimetros = parquimetros.iterator();
 			   
@@ -246,7 +246,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 	
    	private void generar_ubicaciones() {
 	   
-	   ArrayList<String[]> ubicaciones = this.log.get_ubicaciones();
+	   ArrayList<String[]> ubicaciones = this.log.get_ubicaciones("estacionados");
 	   Iterator<String[]> ite_ubicaciones = ubicaciones.iterator();
 	   
 	   
