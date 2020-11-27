@@ -151,8 +151,7 @@ public class VentanaParquimetro extends javax.swing.JInternalFrame
 	   
 	   ArrayList<String> tarjetas = log.get_tarjetas();
 	   Iterator<String> ite_tarjetas = tarjetas.iterator();
-	   
-	   while (ite_tarjetas.hasNext()) {
+	   while (ite_tarjetas.hasNext()) {	   
 		   String id_tarjeta = ite_tarjetas.next();
 		   this.model1.addElement(id_tarjeta);
 	   }

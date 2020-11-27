@@ -440,11 +440,9 @@ public class Logica {
 		String sql = "SELECT id_tarjeta "
 					+"FROM tarjetas "
 					+"ORDER BY id_tarjeta";
-		
 		try {
 			p_stmt = conexionBD.prepareStatement(sql);
 			ResultSet tarjetas = p_stmt.executeQuery();
-			
 			while(tarjetas.next()) {
 				toRet.add(tarjetas.getString("id_tarjeta"));
 			}
