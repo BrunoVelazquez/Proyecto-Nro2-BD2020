@@ -31,6 +31,7 @@ INSERT INTO tipos_tarjeta(tipo, descuento) VALUES("Diamond", 0.5);
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(1212, 450.01, "Silver", "ABC123");
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(5487, 870.95, "Silver", "ZDS879");
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(6598, 140.15, "Diamond", "RGA879");
+INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(300, 0, "Silver", "RGA879");
 
 INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(12, 15487612, "Ricardo", "Carlisa", md5("pass1"));
 INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(13, 15487612, "Omar", "Donofrio", md5("pass2"));

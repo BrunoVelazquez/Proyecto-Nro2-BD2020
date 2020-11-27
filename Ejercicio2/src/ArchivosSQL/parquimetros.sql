@@ -329,19 +329,20 @@ CREATE TABLE multa
 	START TRANSACTION;
 	SELECT descuento INTO descuentoTarjeta FROM tipos_tarjeta NATURAL JOIN tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
 	SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);	
-	SELECT hora_sal INTO salida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) FOR UPDATE;
-	SELECT hora_ent INTO entrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) FOR UPDATE;
+	#Guardo la hora de salida de la ultima tupla de estacionamiento registrada para detectar si abro o cierro estacionamiento.
+	SELECT hora_sal INTO salida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) ORDER BY hora_sal LIMIT 1 FOR UPDATE;
+	SELECT hora_ent INTO entrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) ORDER BY hora_ent LIMIT 1 FOR UPDATE;
 
 	#Si salida es nula y la entrada no, significa que estoy cerrando el estacionamiento, caso contrario lo estoy abriendo.
 	IF(salida IS NULL) AND (entrada IS NOT NULL) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
+				
+		SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) ORDER BY fecha_ent DESC LIMIT 1;
+		SELECT hora_ent INTO horaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) AND (estacionamientos.fecha_ent = fechaEntrada);
 		
-		UPDATE estacionamientos SET fecha_sal = curdate() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
-		UPDATE estacionamientos SET hora_sal = curtime() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
+		UPDATE estacionamientos SET fecha_sal = curdate() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) AND (estacionamientos.fecha_ent = fechaEntrada);
+		UPDATE estacionamientos SET hora_sal = curtime() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq) AND (estacionamientos.hora_ent = horaEntrada);
 		
 		#Defino a la variable tiempo como la diferencia de tiempo en minutos desde la fecha actual y la fecha en la que se estaciono
-		
-		SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
-		SELECT hora_ent INTO horaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.id_parq = id_parq);
 		
 		SET tiempo = TIMESTAMPDIFF(minute, TIMESTAMP(fechaEntrada, horaEntrada), TIMESTAMP(curdate(), curtime())); #Diferencia en minutos
 		
