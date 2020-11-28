@@ -309,7 +309,6 @@ CREATE TABLE multa
 	
 	DECLARE fechaSalida TIME;
     DECLARE horaSalida TIME;
-	DECLARE entrada TIME;
 	DECLARE descuentoTarjeta DECIMAL(3,2); #Variable donde guardo el descuento de la tarjeta pasada por parametro
 	DECLARE tarifaUbicacion DECIMAL(5,2); #Variable donde guardo el costo de la ubicacion del parquimetro pasado por parametro
 	DECLARE fechaEntrada DATE;
