@@ -337,9 +337,9 @@ CREATE TABLE multa
     
         SELECT saldo INTO saldoNuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta) FOR UPDATE;
         SELECT hora_sal INTO horaSalida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL) FOR UPDATE;
-	    SELECT fecha_sal INTO fechaSalida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL) FOR UPDATE;
+	    SELECT fecha_sal INTO fechaSalida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_sal IS NULL) FOR UPDATE;
 
-		SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL);
+		SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_sal IS NULL);
 		SELECT hora_ent INTO horaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL);
 
 		UPDATE estacionamientos SET fecha_sal = curdate() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_ent = fechaEntrada);
