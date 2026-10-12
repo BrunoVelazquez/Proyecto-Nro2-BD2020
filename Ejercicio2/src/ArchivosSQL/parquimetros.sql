@@ -11,6 +11,22 @@
 
 ###################################################################
 
+#   Eliminación de la Base de Datos si existiera
+
+USE parquimetros;
+
+DROP PROCEDURE conectar;
+
+DROP DATABASE parquimetros;
+
+DROP USER admin@localhost;
+DROP USER venta@'%';
+DROP USER inspector@'%';
+DROP USER parquimetro@'%';
+
+FLUSH PRIVILEGES;
+
+
 #   Creación de la base de datos
 CREATE DATABASE parquimetros;
 
@@ -183,7 +199,7 @@ CREATE TABLE asociado_con
         ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
-CREATE TABLE multa
+CREATE TABLE multas
 (
     numero INT UNSIGNED NOT NULL AUTO_INCREMENT,
     patente VARCHAR(6) NOT NULL,
@@ -225,7 +241,7 @@ CREATE TABLE multa
                 NATURAL JOIN
                 parquimetros P
         ) Est_ab_parq
-        NATURAL JOIN    
+        NATURAL JOIN
         tarjetas T
     ORDER BY Est_ab_parq.calle, Est_ab_parq.altura;
 
@@ -275,19 +291,19 @@ CREATE TABLE multa
 
         # Carga de multas
 
-    GRANT INSERT, SELECT ON parquimetros.multa TO 'inspector'@'%';
+    GRANT INSERT, SELECT ON parquimetros.multas TO 'inspector'@'%';
 
         # Registrar accesos a parquímetros.
 
     GRANT INSERT ON parquimetros.accede TO 'inspector'@'%';
 
         # Dado un parquímetro: la obtención de patentes de los automóviles con un estacionamiento abierto en la ubicación del parquímetro
-	
-	GRANT SELECT ON parquimetros.parquimetros TO 'inspector'@'%';
-	
+
+    GRANT SELECT ON parquimetros.parquimetros TO 'inspector'@'%';
+
         # Validación de números de legajo y password de un inspector
-		
-	GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';
+
+    GRANT SELECT ON parquimetros.inspectores TO 'inspector'@'%';
 
 # Asumimos patentes cargadas en la base de datos para hacer multas y nuevas tarjetas
 
@@ -303,69 +319,69 @@ CREATE TABLE multa
 
 # --------- Punto 1 ----------
 
-	delimiter !
-	CREATE PROCEDURE conectar(IN id_tarjeta INTEGER , IN id_parq INTEGER) #Simula la conexión de la tarjeta id_tarjeta al parquimetro id_parq
-	BEGIN
-	
-	DECLARE fechaSalida TIME;
+    DELIMITER !
+    CREATE PROCEDURE conectar(IN id_tarjeta INTEGER , IN id_parq INTEGER) #Simula la conexión de la tarjeta id_tarjeta al parquimetro id_parq
+    BEGIN
+
+    DECLARE fechaSalida TIME;
     DECLARE horaSalida TIME;
-	DECLARE descuentoTarjeta DECIMAL(3,2); #Variable donde guardo el descuento de la tarjeta pasada por parametro
-	DECLARE tarifaUbicacion DECIMAL(5,2); #Variable donde guardo el costo de la ubicacion del parquimetro pasado por parametro
-	DECLARE fechaEntrada DATE;
-	DECLARE horaEntrada TIME;
-	DECLARE tiempo INTEGER;
-	DECLARE saldoActual DECIMAL(5, 2);
+    DECLARE descuentoTarjeta DECIMAL(3,2); #Variable donde guardo el descuento de la tarjeta pasada por parametro
+    DECLARE tarifaUbicacion DECIMAL(5,2); #Variable donde guardo el costo de la ubicacion del parquimetro pasado por parametro
+    DECLARE fechaEntrada DATE;
+    DECLARE horaEntrada TIME;
+    DECLARE tiempo INTEGER;
+    DECLARE saldoActual DECIMAL(5, 2);
     DECLARE saldoNuevo DECIMAL(5, 2);
-	
-	DECLARE codigo_SQL CHAR(5) DEFAULT '00000';
-	DECLARE codigo_MYSQL INT DEFAULT 0;
-	DECLARE mensaje_error TEXT;
 
-	DECLARE EXIT HANDLER FOR SQLEXCEPTION
-	BEGIN
-		GET DIAGNOSTICS CONDITION 1 codigo_MYSQL= MYSQL_ERRNO, codigo_SQL= RETURNED_SQLSTATE, mensaje_error= MESSAGE_TEXT;
-		SELECT 'SQLEXCEPTION!, transaccion abortada' AS resultado, codigo_MySQL, codigo_SQL, mensaje_error;
-		ROLLBACK;
-	END;
+    DECLARE codigo_SQL CHAR(5) DEFAULT '00000';
+    DECLARE codigo_MYSQL INT DEFAULT 0;
+    DECLARE mensaje_error TEXT;
 
-	START TRANSACTION;
-	SELECT descuento INTO descuentoTarjeta FROM tipos_tarjeta NATURAL JOIN tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
-	SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);	
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1 codigo_MYSQL= MYSQL_ERRNO, codigo_SQL= RETURNED_SQLSTATE, mensaje_error= MESSAGE_TEXT;
+        SELECT 'SQLEXCEPTION!, transaccion abortada' AS resultado, codigo_MySQL, codigo_SQL, mensaje_error;
+        ROLLBACK;
+    END;
 
-	#Si existe un estacionamiento abierto, lo cierro
-	IF EXISTS( SELECT * FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta AND estacionamientos.fecha_sal IS NULL AND estacionamientos.hora_sal IS NULL )) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
-    
+    START TRANSACTION;
+    SELECT descuento INTO descuentoTarjeta FROM tipos_tarjeta NATURAL JOIN tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
+    SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);	
+
+    #Si existe un estacionamiento abierto, lo cierro
+    IF EXISTS( SELECT * FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta AND estacionamientos.fecha_sal IS NULL AND estacionamientos.hora_sal IS NULL )) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
+
         SELECT saldo INTO saldoNuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta) FOR UPDATE;
         SELECT hora_sal INTO horaSalida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL) FOR UPDATE;
-	    SELECT fecha_sal INTO fechaSalida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_sal IS NULL) FOR UPDATE;
+        SELECT fecha_sal INTO fechaSalida FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_sal IS NULL) FOR UPDATE;
 
-		SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_sal IS NULL);
-		SELECT hora_ent INTO horaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL);
+        SELECT fecha_ent INTO fechaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_sal IS NULL);
+        SELECT hora_ent INTO horaEntrada FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_sal IS NULL);
 
-		UPDATE estacionamientos SET fecha_sal = curdate() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_ent = fechaEntrada);
-		UPDATE estacionamientos SET hora_sal = curtime() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_ent = horaEntrada);
-        
-		#Defino a la variable tiempo como la diferencia de tiempo en minutos desde la fecha actual y la fecha en la que se estaciono
-		SET tiempo = TIMESTAMPDIFF(minute, TIMESTAMP(fechaEntrada, horaEntrada), TIMESTAMP(curdate(), curtime())); #Diferencia en minutos
+        UPDATE estacionamientos SET fecha_sal = CURDATE() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.fecha_ent = fechaEntrada);
+        UPDATE estacionamientos SET hora_sal = CURTIME() WHERE (estacionamientos.id_tarjeta = id_tarjeta) AND (estacionamientos.hora_ent = horaEntrada);
 
-		UPDATE tarjetas SET saldo = GREATEST(saldo-(tiempo*tarifaUbicacion*(1-descuentoTarjeta)), -999.99) WHERE (tarjetas.id_tarjeta = id_tarjeta);
-        
-		#Muestro por pantalla el cierre del estacionamiento
-		SELECT 'Cierre exitoso' AS Operacion_Realizada, tiempo as Tiempo_en_minutos, saldo AS Saldo_nuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
-	
-	ELSE #La salida no es nula. Si el saldo de la tarjeta es > 0 se abre un nuevo estacionamiento para la tarjeta y parq involucrados, tomando como fecha y hora de entrada la fecha y hora actual.
-		
-		SELECT saldo INTO saldoActual FROM tarjetas WHERE tarjetas.id_tarjeta=id_tarjeta;
-		IF(saldoActual > 0) THEN
-			INSERT INTO estacionamientos VALUES(id_tarjeta, id_parq, curdate(), curtime(), NULL, NULL);
-			SELECT 'Apertura exitosa' AS Operacion, saldoActual/(tarifaUbicacion*(1-descuentoTarjeta)) AS Minutos_disponibles_para_estar_estacionado;
-		ELSE #Muestro error de que no tiene saldo
-			SELECT 'Saldo insuficiente para abrir un parquimetro' AS Error;
-		END IF;
-	END IF;
-	COMMIT;
-	END; !
-	delimiter ;
+        #Defino a la variable tiempo como la diferencia de tiempo en minutos desde la fecha actual y la fecha en la que se estaciono
+    SET tiempo = TIMESTAMPDIFF(MINUTE, TIMESTAMP(fechaEntrada, horaEntrada), TIMESTAMP(CURDATE(), CURTIME())); #Diferencia en minutos
+
+        UPDATE tarjetas SET saldo = GREATEST(saldo-(tiempo*tarifaUbicacion*(1-descuentoTarjeta)), -999.99) WHERE (tarjetas.id_tarjeta = id_tarjeta);
+
+        #Muestro por pantalla el cierre del estacionamiento
+        SELECT 'Cierre exitoso' AS Operacion_Realizada, tiempo AS Tiempo_en_minutos, saldo AS Saldo_nuevo FROM tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
+
+    ELSE #La salida no es nula. Si el saldo de la tarjeta es > 0 se abre un nuevo estacionamiento para la tarjeta y parq involucrados, tomando como fecha y hora de entrada la fecha y hora actual.
+
+        SELECT saldo INTO saldoActual FROM tarjetas WHERE tarjetas.id_tarjeta=id_tarjeta;
+        IF(saldoActual > 0) THEN
+            INSERT INTO estacionamientos VALUES(id_tarjeta, id_parq, CURDATE(), CURTIME(), NULL, NULL);
+            SELECT 'Apertura exitosa' AS Operacion, saldoActual/(tarifaUbicacion*(1-descuentoTarjeta)) AS Minutos_disponibles_para_estar_estacionado;
+        ELSE #Muestro error de que no tiene saldo
+            SELECT 'Saldo insuficiente para abrir un parquimetro' AS Error;
+        END IF;
+    END IF;
+    COMMIT;
+    END; !
+	DELIMITER ;
 
 # --------- Punto 2 ----------
 
@@ -375,11 +391,11 @@ CREATE TABLE multa
     # Contraseña del usuario: parq
 
     CREATE USER 'parquimetro'@'%' IDENTIFIED BY 'parq';
-	
-    GRANT EXECUTE ON PROCEDURE parquimetros.conectar to 'parquimetro'@'%';
-    GRANT SELECT ON parquimetros.ubicaciones to 'parquimetro'@'%';
-    GRANT SELECT ON parquimetros.parquimetros to 'parquimetro'@'%';
-    GRANT SELECT ON parquimetros.tarjetas to 'parquimetro'@'%';
+
+    GRANT EXECUTE ON PROCEDURE parquimetros.conectar TO 'parquimetro'@'%';
+    GRANT SELECT ON parquimetros.ubicaciones TO 'parquimetro'@'%';
+    GRANT SELECT ON parquimetros.parquimetros TO 'parquimetro'@'%';
+    GRANT SELECT ON parquimetros.tarjetas TO 'parquimetro'@'%';
 # --------- Punto 3 ----------
 
 CREATE TABLE ventas
@@ -403,7 +419,7 @@ CREATE TABLE ventas
 ) ENGINE=InnoDB;
 
 
-delimiter !
+DELIMITER !
 
 CREATE TRIGGER nueva_tarjeta
 AFTER INSERT ON tarjetas
@@ -412,4 +428,4 @@ BEGIN
     INSERT INTO ventas VALUES (NEW.id_tarjeta,NEW.tipo,NEW.saldo,CURDATE(),CURTIME());
 END; !
 
-delimiter ;
+DELIMITER ;

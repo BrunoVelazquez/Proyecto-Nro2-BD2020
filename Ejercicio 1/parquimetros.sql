@@ -183,7 +183,7 @@ CREATE TABLE asociado_con
         ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
-CREATE TABLE multa
+CREATE TABLE multas
 (
     numero INT UNSIGNED NOT NULL AUTO_INCREMENT,
     patente VARCHAR(6) NOT NULL,
@@ -275,7 +275,7 @@ CREATE TABLE multa
 
         # Carga de multas
 
-    GRANT INSERT, SELECT ON parquimetros.multa TO 'inspector'@'%';
+    GRANT INSERT, SELECT ON parquimetros.multas TO 'inspector'@'%';
 
         # Registrar accesos a parquímetros.
 

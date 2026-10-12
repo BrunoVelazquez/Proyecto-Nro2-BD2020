@@ -346,7 +346,7 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
 	private void mostrar_en_tabla(int id_asociado_con, ArrayList<Integer> lista_numero_multas/*, String[] arreglo*/) {
 		
 		String sql_para_modelo = "SELECT numero as numero_multa,fecha,hora,calle,altura,patente,legajo as legajo_inspector "
-						+ "FROM multa NATURAL JOIN asociado_con";
+						+ "FROM multas NATURAL JOIN asociado_con";
 		tabla.setConnection(log.getConexionBD());
 		tabla.setSelectSql(sql_para_modelo);
 		try {

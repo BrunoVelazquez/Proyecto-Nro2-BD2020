@@ -90,23 +90,23 @@ INSERT INTO tarjetas(id_tarjeta,saldo,tipo,patente) VALUES (9,0,'normal','AAA888
 
 # un inspector para cada dia de la semana para la ubicaci�n mitre al 100
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (1,11,'nombreins1','apellidoins1',md5('1'));
+VALUES (1,11,'nombreins1','apellidoins1',MD5('1'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (2,12,'nombreins2','apellidoins2',md5('2'));
+VALUES (2,12,'nombreins2','apellidoins2',MD5('2'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (3,13,'nombreins3','apellidoins3',md5('3'));
+VALUES (3,13,'nombreins3','apellidoins3',MD5('3'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (4,14,'nombreins4','apellidoins4',md5('4'));
+VALUES (4,14,'nombreins4','apellidoins4',MD5('4'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (5,15,'nombreins5','apellidoins5',md5('5'));
+VALUES (5,15,'nombreins5','apellidoins5',MD5('5'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (6,16,'nombreins6','apellidoins6',md5('6'));
+VALUES (6,16,'nombreins6','apellidoins6',MD5('6'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (7,17,'nombreins7','apellidoins7',md5('7'));
+VALUES (7,17,'nombreins7','apellidoins7',MD5('7'));
 
 # inspector comodin: asociado a la ubicacion mitre al 200 todos los dias y turnos
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
-VALUES (10,20,'nombreins10','apellidoins10',md5('10'));
+VALUES (10,20,'nombreins10','apellidoins10',MD5('10'));
 
 
 #-------------------------Ubicaciones----------------------------------#
@@ -132,15 +132,15 @@ INSERT INTO Parquimetros(id_parq,numero,calle,altura) VALUES (401,401,'Alem',400
 
 # Un estacionamiento cerrado ayer para cada parquimetro
 INSERT INTO Estacionamientos(id_tarjeta,id_parq,fecha_ent,hora_ent,fecha_sal,hora_sal) 
-VALUES (4,101,date_sub(curdate() , interval 1 day),'10:00:00',date_sub(curdate() , interval 1 day),'11:00:00');
+VALUES (4,101,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'10:00:00',DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:00:00');
 INSERT INTO Estacionamientos(id_tarjeta,id_parq,fecha_ent,hora_ent,fecha_sal,hora_sal) 
-VALUES (5,201,date_sub(curdate() , interval 1 day),'10:00:00',date_sub(curdate() , interval 1 day),'11:00:00');
+VALUES (5,201,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'10:00:00',DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:00:00');
 INSERT INTO Estacionamientos(id_tarjeta,id_parq,fecha_ent,hora_ent,fecha_sal,hora_sal) 
-VALUES (6,301,date_sub(curdate() , interval 1 day),'10:00:00',date_sub(curdate() , interval 1 day),'11:00:00');
+VALUES (6,301,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'10:00:00',DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:00:00');
 INSERT INTO Estacionamientos(id_tarjeta,id_parq,fecha_ent,hora_ent,fecha_sal,hora_sal) 
-VALUES (7,302,date_sub(curdate() , interval 1 day),'10:00:00',date_sub(curdate() , interval 1 day),'11:00:00');
+VALUES (7,302,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'10:00:00',DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:00:00');
 INSERT INTO Estacionamientos(id_tarjeta,id_parq,fecha_ent,hora_ent,fecha_sal,hora_sal) 
-VALUES (8,401,date_sub(curdate() , interval 1 day),'10:00:00',date_sub(curdate() , interval 1 day),'11:00:00');
+VALUES (8,401,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'10:00:00',DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:00:00');
 
 
 # Estacionamientos abiertos
@@ -177,7 +177,7 @@ VALUES (5,401,CURDATE(),CURTIME(),NULL,NULL);
 
 #La tarjeta 12 (auto con patente AAA112) ingreso en el parquimetro de alem  401 ayer (se lo olvido abierto) 
 INSERT INTO Estacionamientos(id_tarjeta,id_parq,fecha_ent,hora_ent,fecha_sal,hora_sal) 
-VALUES (12,401,date_sub(curdate() , interval 1 day),'11:0:00',NULL,NULL);
+VALUES (12,401,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:0:00',NULL,NULL);
 
 
 #-------------------------Asociado_con----------------------------------#
@@ -268,36 +268,36 @@ VALUES (72,7,'Mitre',100,'Do','T');
 
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA111',11);
+VALUES (CURDATE()-1,'18:10:35','AAA111',11);
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA111',31);
+VALUES (CURDATE()-1,'18:10:35','AAA111',31);
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA111',51);
+VALUES (CURDATE()-1,'18:10:35','AAA111',51);
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA111',71);
+VALUES (CURDATE()-1,'18:10:35','AAA111',71);
 
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA222',21);
+VALUES (CURDATE()-1,'18:10:35','AAA222',21);
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA222',41);
+VALUES (CURDATE()-1,'18:10:35','AAA222',41);
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA222',61);
+VALUES (CURDATE()-1,'18:10:35','AAA222',61);
 
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA333',31);
+VALUES (CURDATE()-1,'18:10:35','AAA333',31);
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA444',41);
+VALUES (CURDATE()-1,'18:10:35','AAA444',41);
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA555',51);
+VALUES (CURDATE()-1,'18:10:35','AAA555',51);
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA666',61);
+VALUES (CURDATE()-1,'18:10:35','AAA666',61);
 
 INSERT INTO Multa(fecha,hora,patente,id_asociado_con) 
-VALUES (curdate()-1,'18:10:35','AAA777',71);
+VALUES (CURDATE()-1,'18:10:35','AAA777',71);
 
 #--------------------------------------------------------------------#
