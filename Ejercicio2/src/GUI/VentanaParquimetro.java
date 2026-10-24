@@ -25,7 +25,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 
 
-@SuppressWarnings("serial")
 public class VentanaParquimetro extends javax.swing.JInternalFrame 
 {
    private JPanel panel_Ubicaciones_Parquimetros;

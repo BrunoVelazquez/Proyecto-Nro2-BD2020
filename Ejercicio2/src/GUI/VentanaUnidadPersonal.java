@@ -35,7 +35,6 @@ import javax.swing.text.BadLocationException;
 import quick.dbtable.DBTable;
 
 
-@SuppressWarnings("serial")
 public class VentanaUnidadPersonal extends javax.swing.JInternalFrame 
 {
 	private JTextField textFieldPatente;
