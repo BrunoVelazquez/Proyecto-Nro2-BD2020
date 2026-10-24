@@ -235,13 +235,13 @@ public class Logica {
 		
 		if (!estacionada) {
 		
-			String sql = "INSERT INTO multa (numero, fecha, hora, patente, id_asociado_con) "
+			String sql = "INSERT INTO multas (numero, fecha, hora, patente, id_asociado_con) "
 					+"VALUES(NULL, CURDATE(), CURTIME(), '"+patente+"', "+id_asociado_con+")";
 			
 			try {
 				stmt = conexionBD.createStatement();
 				stmt.executeUpdate(sql);
-				rs = stmt.executeQuery("SELECT numero FROM multa ORDER BY numero DESC");
+				rs = stmt.executeQuery("SELECT numero FROM multas ORDER BY numero DESC");
 				
 				if(rs.next())
 					toRet = rs.getInt("numero");
@@ -405,7 +405,7 @@ public class Logica {
 		Vector<String> toRet = new Vector<String>(7,0);
 		
 		String sql = "SELECT numero,fecha,hora,calle,altura,patente,legajo "
-				+ "FROM multa NATURAL JOIN asociado_con "
+				+ "FROM multas NATURAL JOIN asociado_con "
 				+ "WHERE numero = ? AND id_asociado_con = ?";
 
 		try {
@@ -413,7 +413,7 @@ public class Logica {
 			p_stmt.setString(1,""+numero_multa);
 			p_stmt.setString(2,""+id_asociado_con);
 			sql = "SELECT numero,fecha,hora,calle,altura,patente,legajo "
-					+ "FROM multa NATURAL JOIN asociado_con "
+					+ "FROM multas NATURAL JOIN asociado_con "
 					+ "WHERE numero = "+numero_multa+" AND id_asociado_con = "+id_asociado_con;
 			ResultSet rs = p_stmt.executeQuery();
 			

@@ -30,7 +30,6 @@ import quick.dbtable.DBTable;
 import java.awt.Font;
 
 
-@SuppressWarnings("serial")
 public class Ventana_Consulta_A_Logica extends javax.swing.JInternalFrame{
 
 	private Logica log;

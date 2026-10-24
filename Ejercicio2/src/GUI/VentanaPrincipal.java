@@ -21,7 +21,6 @@ import Logica.WrongInputException;
 
 
 
-@SuppressWarnings("serial")
 public class VentanaPrincipal extends javax.swing.JFrame 
 {
 

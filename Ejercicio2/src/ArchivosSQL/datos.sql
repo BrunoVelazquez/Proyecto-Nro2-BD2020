@@ -17,7 +17,7 @@ USE parquimetros;
 # Carga de datos de Prueba
 
 INSERT INTO conductores(dni, nombre, apellido, direccion, telefono, registro) VALUES(12547879, "Roberto", "Carlos", "Brown", 154879865, 450);
-INSERT INTO conductores(dni, nombre, apellido, direccion, telefono, registro) VALUES(10458744, "Alberto", "Kels", "Castelli", 159547862, 840);										
+INSERT INTO conductores(dni, nombre, apellido, direccion, telefono, registro) VALUES(10458744, "Alberto", "Kels", "Castelli", 159547862, 840);
 INSERT INTO conductores(dni, nombre, apellido, direccion, telefono, registro) VALUES(40578954, "Oscar", "Nodorio", "Bolivia", 152124578, 320);
 
 INSERT INTO automoviles(patente, marca, modelo, color, dni) VALUES("ABC123", "Audi", "A4", "Negro", 12547879);
@@ -33,9 +33,9 @@ INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(5487, 870.95, "Sil
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(6598, 140.15, "Diamond", "RGA879");
 INSERT INTO tarjetas(id_tarjeta, saldo, tipo, patente) VALUES(300, 0, "Silver", "RGA879");
 
-INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(12, 15487612, "Ricardo", "Carlisa", md5("pass1"));
-INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(13, 15487612, "Omar", "Donofrio", md5("pass2"));
-INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(14, 15487612, "Alan", "Schen", md5("pass3"));
+INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(12, 15487612, "Ricardo", "Carlisa", MD5("pass1"));
+INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(13, 15487612, "Omar", "Donofrio", MD5("pass2"));
+INSERT INTO inspectores(legajo, dni, nombre, apellido, password) VALUES(14, 15487612, "Alan", "Schen", MD5("pass3"));
 
 INSERT INTO ubicaciones(calle, altura, tarifa) VALUES("Almafuerte", 1000, 100.15);
 INSERT INTO ubicaciones(calle, altura, tarifa) VALUES("Colon", 200, 150.05);
@@ -57,6 +57,6 @@ INSERT INTO asociado_con(id_asociado_con, legajo, calle, altura, dia, turno) VAL
 INSERT INTO asociado_con(id_asociado_con, legajo, calle, altura, dia, turno) VALUES(6060, 13, "Colon", 200, "Ma", "T");
 INSERT INTO asociado_con(id_asociado_con, legajo, calle, altura, dia, turno) VALUES(7070, 14, "Caronti", 100, "Mi", "M");
 
-INSERT INTO multa(numero, fecha, hora, patente, id_asociado_con) VALUES(115, "2017-06-06", "23:05:59", "ABC123", 5050);
-INSERT INTO multa(numero, fecha, hora, patente, id_asociado_con) VALUES(116, "2018-01-02", "13:51:02", "ZDS879", 6060);
-INSERT INTO multa(numero, fecha, hora, patente, id_asociado_con) VALUES(117, "2019-01-08", "14:40:12", "RGA879", 7070);
+INSERT INTO multas(numero, fecha, hora, patente, id_asociado_con) VALUES(115, "2017-06-06", "23:05:59", "ABC123", 5050);
+INSERT INTO multas(numero, fecha, hora, patente, id_asociado_con) VALUES(116, "2018-01-02", "13:51:02", "ZDS879", 6060);
+INSERT INTO multas(numero, fecha, hora, patente, id_asociado_con) VALUES(117, "2019-01-08", "14:40:12", "RGA879", 7070);
