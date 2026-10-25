@@ -6,5 +6,3 @@ Vista: Ok
 
 Usuarios:
 - El usuario inspector debe tener permiso de SELECT en asociado_con. //CORREGIDO
-  
-   
