@@ -37,19 +37,19 @@ import quick.dbtable.DBTable;
 
 public class VentanaUnidadPersonal extends javax.swing.JInternalFrame 
 {
-	private JTextField textFieldPatente;
-	private JPanel panel_Patentes,panel_Ubicaciones_Parquimetros,panel_Multas;
-	private JScrollPane scrollPane,scrollPane_1,scrollPane_2;
-   	private JList<String> lista_patentes,lista_ubicaciones,lista_parquimetros;
-   	private DefaultListModel<String> model1,model2,model3;
-   	private JLabel lblPatente,lblListaPatentes,lblUbicaciones,lblParquimetros,lbl_multas;
-   	private JButton btnIngresarPatente,btnRegistrarAcceso_LabrarMultas;
-   	private DBTable tabla;
-   	private Logica log;
+    private JTextField textFieldPatente;
+    private JPanel panel_Patentes,panel_Ubicaciones_Parquimetros,panel_Multas;
+    private JScrollPane scrollPane,scrollPane_1,scrollPane_2;
+       private JList<String> lista_patentes,lista_ubicaciones,lista_parquimetros;
+       private DefaultListModel<String> model1,model2,model3;
+       private JLabel lblPatente,lblListaPatentes,lblUbicaciones,lblParquimetros,lbl_multas;
+       private JButton btnIngresarPatente,btnRegistrarAcceso_LabrarMultas;
+       private DBTable tabla;
+       private Logica log;
    
-   	public VentanaUnidadPersonal(Logica logica) 
+       public VentanaUnidadPersonal(Logica logica) 
    {
-   		
+           
       super();
       initGUI();
       this.log = logica;
@@ -99,9 +99,9 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          
          textFieldPatente.setDocument(new JTextFieldLimit(6));
          this.textFieldPatente.addKeyListener(new KeyAdapter() {
-        	 public void keyTyped(KeyEvent e) {
-        		 jTextField1KeyTyped(e);
-        	 }
+             public void keyTyped(KeyEvent e) {
+                 jTextField1KeyTyped(e);
+             }
          });
          
          btnIngresarPatente = new JButton("Ingresar patente");
@@ -110,9 +110,9 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          panel_Patentes.add(btnIngresarPatente);
          btnIngresarPatente.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				agregar_a_lista_patentes(textFieldPatente.getText());
-			}      	 
+            public void actionPerformed(ActionEvent e) {
+                agregar_a_lista_patentes(textFieldPatente.getText());
+            }           
          });
          
          lblListaPatentes = new JLabel("Lista de patentes ingresadas:");
@@ -144,17 +144,17 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          lista_parquimetros = new JList<String>(model3);
          scrollPane_2.setViewportView(lista_parquimetros);
          lista_parquimetros.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				if (!model1.isEmpty())
-					btnRegistrarAcceso_LabrarMultas.setEnabled(true);
-			}
-        	 
+            public void valueChanged(ListSelectionEvent e) {
+                if (!model1.isEmpty())
+                    btnRegistrarAcceso_LabrarMultas.setEnabled(true);
+            }
+             
          });
          lista_ubicaciones.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				generar_parquimetros(e);
-				btnRegistrarAcceso_LabrarMultas.setEnabled(false);
-			}
+            public void valueChanged(ListSelectionEvent e) {
+                generar_parquimetros(e);
+                btnRegistrarAcceso_LabrarMultas.setEnabled(false);
+            }
          });
          lblParquimetros = new JLabel("Parquimetros:");
          lblParquimetros.setBounds(10, 153, 99, 14);
@@ -179,27 +179,27 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
          lbl_multas.setBounds(0, 0, 127, 14);
          panel_Multas.add(lbl_multas);
          btnRegistrarAcceso_LabrarMultas.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				registrar_acceso();
-				String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
-				String[] arreglo = ubicacion_seleccionada.split(",");
-				try {
-					int id_asociado_con = comprobar_ubicacion_asociada(arreglo);
-					comprobar_dia_horario(id_asociado_con);
-					ArrayList<Integer> lista_numero_multas = labrar_multas(id_asociado_con,arreglo[0],Integer.parseInt(arreglo[1]));
-					
-					mostrar_en_tabla(id_asociado_con,lista_numero_multas);
-					
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-				}
-				finally {
-					btnRegistrarAcceso_LabrarMultas.setEnabled(false);
-					model1.removeAllElements();
-				}
-			}
-			
+            public void actionPerformed(ActionEvent e) {
+                
+                registrar_acceso();
+                String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
+                String[] arreglo = ubicacion_seleccionada.split(",");
+                try {
+                    int id_asociado_con = comprobar_ubicacion_asociada(arreglo);
+                    comprobar_dia_horario(id_asociado_con);
+                    ArrayList<Integer> lista_numero_multas = labrar_multas(id_asociado_con,arreglo[0],Integer.parseInt(arreglo[1]));
+                    
+                    mostrar_en_tabla(id_asociado_con,lista_numero_multas);
+                    
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+                }
+                finally {
+                    btnRegistrarAcceso_LabrarMultas.setEnabled(false);
+                    model1.removeAllElements();
+                }
+            }
+            
          });
 
    }
@@ -209,163 +209,163 @@ public class VentanaUnidadPersonal extends javax.swing.JInternalFrame
       this.log.desconectarBD();
    }
    
-   	private class JTextFieldLimit extends PlainDocument {
-	   private int limit;
+       private class JTextFieldLimit extends PlainDocument {
+       private int limit;
 
-	   JTextFieldLimit(int limit) {
-	    super();
-	    this.limit = limit;
-	    }
+       JTextFieldLimit(int limit) {
+        super();
+        this.limit = limit;
+        }
 
-	   public void insertString( int offset, String  str, AttributeSet attr) throws BadLocationException {
-	     if (str == null) return;
+       public void insertString( int offset, String  str, AttributeSet attr) throws BadLocationException {
+         if (str == null) return;
 
-	     if ((getLength() + str.length()) <= limit) {
-	       super.insertString(offset, str, attr);
-	     }
-	   }
-	 }
+         if ((getLength() + str.length()) <= limit) {
+           super.insertString(offset, str, attr);
+         }
+       }
+     }
    
-   	private void generar_parquimetros(ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting()) {
-			model3.removeAllElements();
-			String id_parq = "";
-			String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
-			ArrayList<String> parquimetros = log.get_parquimetros_de_ubicaciones(ubicacion_seleccionada.split(","),"estacionados");
-			
-			Iterator<String> ite_parquimetros = parquimetros.iterator();
-			   
-		   while (ite_parquimetros.hasNext()) {
-			   id_parq = ite_parquimetros.next();
-			   model3.addElement(id_parq);
-		   }
-		}
-		
-	}
-	
-   	private void generar_ubicaciones() {
-	   
-	   ArrayList<String[]> ubicaciones = this.log.get_ubicaciones("estacionados");
-	   Iterator<String[]> ite_ubicaciones = ubicaciones.iterator();
-	   
-	   
-	   while (ite_ubicaciones.hasNext()) {
-		   String[] calle_altura = ite_ubicaciones.next();
-		   String calle_altura_para_lista = calle_altura[0] +","+ calle_altura[1];
-		   this.model2.addElement(calle_altura_para_lista);		   
-	   }
+       private void generar_parquimetros(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            model3.removeAllElements();
+            String id_parq = "";
+            String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
+            ArrayList<String> parquimetros = log.get_parquimetros_de_ubicaciones(ubicacion_seleccionada.split(","),"estacionados");
+            
+            Iterator<String> ite_parquimetros = parquimetros.iterator();
+               
+           while (ite_parquimetros.hasNext()) {
+               id_parq = ite_parquimetros.next();
+               model3.addElement(id_parq);
+           }
+        }
+        
+    }
+    
+       private void generar_ubicaciones() {
+       
+       ArrayList<String[]> ubicaciones = this.log.get_ubicaciones("estacionados");
+       Iterator<String[]> ite_ubicaciones = ubicaciones.iterator();
+       
+       
+       while (ite_ubicaciones.hasNext()) {
+           String[] calle_altura = ite_ubicaciones.next();
+           String calle_altura_para_lista = calle_altura[0] +","+ calle_altura[1];
+           this.model2.addElement(calle_altura_para_lista);           
+       }
    }
    
-   	private void jTextField1KeyTyped(KeyEvent evt) {
-	   	boolean max = this.textFieldPatente.getText().length() + 2  >= 7;
-	   	this.btnIngresarPatente.setEnabled(max);
-	    
-	}
+       private void jTextField1KeyTyped(KeyEvent evt) {
+           boolean max = this.textFieldPatente.getText().length() + 2  >= 7;
+           this.btnIngresarPatente.setEnabled(max);
+        
+    }
    
-   	private void agregar_a_lista_patentes(String text) {	   
-	   String texto_mayus = text.toUpperCase();
+       private void agregar_a_lista_patentes(String text) {       
+       String texto_mayus = text.toUpperCase();
 
-	   if (!this.model1.contains(texto_mayus))
-	   		this.model1.addElement(texto_mayus);
+       if (!this.model1.contains(texto_mayus))
+               this.model1.addElement(texto_mayus);
 
-	   this.textFieldPatente.setText("");
-	   this.btnIngresarPatente.setEnabled(false);
-	   this.lista_parquimetros.clearSelection();
-	   this.btnRegistrarAcceso_LabrarMultas.setEnabled(false);
+       this.textFieldPatente.setText("");
+       this.btnIngresarPatente.setEnabled(false);
+       this.lista_parquimetros.clearSelection();
+       this.btnRegistrarAcceso_LabrarMultas.setEnabled(false);
    }
    
-   	private void registrar_acceso() {
-		log.registrarAccesoInspector(Integer.parseInt(this.lista_parquimetros.getSelectedValue()));
-	}
-	
-	private int comprobar_ubicacion_asociada(String[] arreglo) throws SQLException {
-		int toRet = 0;
-		toRet = this.log.obtenerIdAsociado(arreglo[0],Integer.parseInt(arreglo[1]));
-		return toRet;
-	}
+       private void registrar_acceso() {
+        log.registrarAccesoInspector(Integer.parseInt(this.lista_parquimetros.getSelectedValue()));
+    }
+    
+    private int comprobar_ubicacion_asociada(String[] arreglo) throws SQLException {
+        int toRet = 0;
+        toRet = this.log.obtenerIdAsociado(arreglo[0],Integer.parseInt(arreglo[1]));
+        return toRet;
+    }
    
-	private void comprobar_dia_horario(int id_asociado_con) throws SQLException {
-		this.log.comprobar_dia_horario(id_asociado_con);
-	}
-	
-	private ArrayList<Integer> labrar_multas(int id_asociado_con, String calle, int altura) {
-		
-		ArrayList<String> patentes = new ArrayList<String>();
-		ArrayList<String> patentes_no_existentes = new ArrayList<String>();
-		ArrayList<String> patentes_ya_estacionadas = new ArrayList<String>();
-		ArrayList<Integer> numeros_multas = new ArrayList<Integer>();
-		
-		for(int i = 0; i < model1.getSize(); i++) {
-			patentes.add(model1.get(i));
-		}	
-		
-		Iterator<String> ite_patentes = patentes.iterator();
-		
-		while (ite_patentes.hasNext()) {
-			try {
-				numeros_multas.add(log.cargarMulta(ite_patentes.next(), calle, altura, id_asociado_con));
-			} catch (ExceptionNoExisteEnBD e) {
-				patentes_no_existentes.add(e.getMessage());
-			} catch(ExceptionYaEstacionada e) {
-				patentes_ya_estacionadas.add(e.getMessage());
+    private void comprobar_dia_horario(int id_asociado_con) throws SQLException {
+        this.log.comprobar_dia_horario(id_asociado_con);
+    }
+    
+    private ArrayList<Integer> labrar_multas(int id_asociado_con, String calle, int altura) {
+        
+        ArrayList<String> patentes = new ArrayList<String>();
+        ArrayList<String> patentes_no_existentes = new ArrayList<String>();
+        ArrayList<String> patentes_ya_estacionadas = new ArrayList<String>();
+        ArrayList<Integer> numeros_multas = new ArrayList<Integer>();
+        
+        for(int i = 0; i < model1.getSize(); i++) {
+            patentes.add(model1.get(i));
+        }    
+        
+        Iterator<String> ite_patentes = patentes.iterator();
+        
+        while (ite_patentes.hasNext()) {
+            try {
+                numeros_multas.add(log.cargarMulta(ite_patentes.next(), calle, altura, id_asociado_con));
+            } catch (ExceptionNoExisteEnBD e) {
+                patentes_no_existentes.add(e.getMessage());
+            } catch(ExceptionYaEstacionada e) {
+                patentes_ya_estacionadas.add(e.getMessage());
 
-			}
-		}
-		
-		if (!patentes_no_existentes.isEmpty())
-			mostrar_patentes_no_existentes(patentes_no_existentes);
-		if (!patentes_ya_estacionadas.isEmpty())
-			mostrar_patentes_ya_estacionadas(patentes_ya_estacionadas);
-		
-		return numeros_multas;
-	}
+            }
+        }
+        
+        if (!patentes_no_existentes.isEmpty())
+            mostrar_patentes_no_existentes(patentes_no_existentes);
+        if (!patentes_ya_estacionadas.isEmpty())
+            mostrar_patentes_ya_estacionadas(patentes_ya_estacionadas);
+        
+        return numeros_multas;
+    }
 
-	private void mostrar_patentes_no_existentes(ArrayList<String> patentes_no_existentes) {
-		String mensaje_a_mostrar = "";
-		
-		Iterator<String> ite_patentes_no_existentes = patentes_no_existentes.iterator();
-		
-		while (ite_patentes_no_existentes.hasNext())
-			mensaje_a_mostrar += ite_patentes_no_existentes.next() +"\n";
-		
-		JOptionPane.showMessageDialog(null, mensaje_a_mostrar, "Patentes no registradas en el sistema", JOptionPane.ERROR_MESSAGE );
-	}
-	
-	private void mostrar_patentes_ya_estacionadas(ArrayList<String> patentes_ya_estacionadas) {
-		String mensaje_a_mostrar = "";
-		
-		Iterator<String> ite_patentes_ya_estacionadas = patentes_ya_estacionadas.iterator();
-		
-		while (ite_patentes_ya_estacionadas.hasNext())
-			mensaje_a_mostrar += ite_patentes_ya_estacionadas.next() +"\n";
-		
-		JOptionPane.showMessageDialog(null, mensaje_a_mostrar, "Patentes ya estacionadas en el sistema", JOptionPane.ERROR_MESSAGE );
-	}
-	
-	private void mostrar_en_tabla(int id_asociado_con, ArrayList<Integer> lista_numero_multas/*, String[] arreglo*/) {
-		
-		String sql_para_modelo = "SELECT numero as numero_multa,fecha,hora,calle,altura,patente,legajo as legajo_inspector "
-						+ "FROM multas NATURAL JOIN asociado_con";
-		tabla.setConnection(log.getConexionBD());
-		tabla.setSelectSql(sql_para_modelo);
-		try {
-			tabla.createColumnModelFromQuery();
-			for (int i = 0; i < tabla.getColumnCount(); i++)
-	    	  {  		   		  
-	    		 if	 (tabla.getColumn(i).getType()==Types.TIME | (tabla.getColumn(i).getType()==Types.DATE))
-	    		 {    		 
-	    		    tabla.getColumn(i).setType(Types.CHAR);  
-	  	       	 }
-	          }
-			tabla.refresh();			
-			tabla.removeAllRows();
-			tabla.setSelectSql("");
-			Iterator<Integer> ite_lista_numero_multas = lista_numero_multas.iterator();
-			
-			while(ite_lista_numero_multas.hasNext()) {				
-				tabla.insert(this.log.get_datos_multa(ite_lista_numero_multas.next(),id_asociado_con));		
-			}
-			
-		} catch (SQLException e) {}	
-	}
+    private void mostrar_patentes_no_existentes(ArrayList<String> patentes_no_existentes) {
+        String mensaje_a_mostrar = "";
+        
+        Iterator<String> ite_patentes_no_existentes = patentes_no_existentes.iterator();
+        
+        while (ite_patentes_no_existentes.hasNext())
+            mensaje_a_mostrar += ite_patentes_no_existentes.next() +"\n";
+        
+        JOptionPane.showMessageDialog(null, mensaje_a_mostrar, "Patentes no registradas en el sistema", JOptionPane.ERROR_MESSAGE );
+    }
+    
+    private void mostrar_patentes_ya_estacionadas(ArrayList<String> patentes_ya_estacionadas) {
+        String mensaje_a_mostrar = "";
+        
+        Iterator<String> ite_patentes_ya_estacionadas = patentes_ya_estacionadas.iterator();
+        
+        while (ite_patentes_ya_estacionadas.hasNext())
+            mensaje_a_mostrar += ite_patentes_ya_estacionadas.next() +"\n";
+        
+        JOptionPane.showMessageDialog(null, mensaje_a_mostrar, "Patentes ya estacionadas en el sistema", JOptionPane.ERROR_MESSAGE );
+    }
+    
+    private void mostrar_en_tabla(int id_asociado_con, ArrayList<Integer> lista_numero_multas/*, String[] arreglo*/) {
+        
+        String sql_para_modelo = "SELECT numero as numero_multa,fecha,hora,calle,altura,patente,legajo as legajo_inspector "
+                        + "FROM multas NATURAL JOIN asociado_con";
+        tabla.setConnection(log.getConexionBD());
+        tabla.setSelectSql(sql_para_modelo);
+        try {
+            tabla.createColumnModelFromQuery();
+            for (int i = 0; i < tabla.getColumnCount(); i++)
+              {                       
+                 if     (tabla.getColumn(i).getType()==Types.TIME | (tabla.getColumn(i).getType()==Types.DATE))
+                 {             
+                    tabla.getColumn(i).setType(Types.CHAR);  
+                      }
+              }
+            tabla.refresh();            
+            tabla.removeAllRows();
+            tabla.setSelectSql("");
+            Iterator<Integer> ite_lista_numero_multas = lista_numero_multas.iterator();
+            
+            while(ite_lista_numero_multas.hasNext()) {                
+                tabla.insert(this.log.get_datos_multa(ite_lista_numero_multas.next(),id_asociado_con));        
+            }
+            
+        } catch (SQLException e) {}    
+    }
 }

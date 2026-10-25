@@ -24,7 +24,7 @@ import Logica.WrongInputException;
 public class VentanaPrincipal extends javax.swing.JFrame 
 {
 
-	private Logica logica;
+    private Logica logica;
    private Ventana_Consulta_A_Logica vcal;
    private VentanaUnidadPersonal vup;
    private VentanaParquimetro vp;
@@ -82,7 +82,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             jMenuBar1 = new JMenuBar();
             setJMenuBar(jMenuBar1);
             {
-            	menuAdmin = new JMenu();
+                menuAdmin = new JMenu();
                jMenuBar1.add(menuAdmin);
                menuAdmin.setText("Admin");
                
@@ -104,22 +104,22 @@ public class VentanaPrincipal extends javax.swing.JFrame
                    menuInspector.add(mniUnidadPersonal);
                    mniUnidadPersonal.setText("Unidad Personal");
                    {
-                   	menuParq = new JMenu();
-                   	menuParq.setText("Parquimetro");
-                   	jMenuBar1.add(menuParq);
-                   	
-                   	
-                   	{
-                   		mniConectar = new JMenuItem();
-                   		mniConectar.setText("Conexi\u00F3n de una tarjeta");
-                   		menuParq.add(mniConectar);
-                   		mniConectar.addActionListener(new ActionListener() {
-                   			public void actionPerformed(ActionEvent evt) {
-                   				mniConectarActionPermformed(evt);
-                   			}
+                       menuParq = new JMenu();
+                       menuParq.setText("Parquimetro");
+                       jMenuBar1.add(menuParq);
+                       
+                       
+                       {
+                           mniConectar = new JMenuItem();
+                           mniConectar.setText("Conexi\u00F3n de una tarjeta");
+                           menuParq.add(mniConectar);
+                           mniConectar.addActionListener(new ActionListener() {
+                               public void actionPerformed(ActionEvent evt) {
+                                   mniConectarActionPermformed(evt);
+                               }
 
-                   		});
-                   	}
+                           });
+                       }
                    }
                    mniUnidadPersonal.addActionListener(new ActionListener() {
                       public void actionPerformed(ActionEvent evt) {
@@ -137,114 +137,114 @@ public class VentanaPrincipal extends javax.swing.JFrame
    }
    
    private void mniConsultasActionPerformed(ActionEvent evt) {
-	  JPasswordField pass = new JPasswordField();
-		  try {
-	    	  int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contraseña de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+      JPasswordField pass = new JPasswordField();
+          try {
+              int res = JOptionPane.showConfirmDialog(null, pass, "Ingrese contraseï¿½a de Administrador", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-	    	  if (res == JOptionPane.OK_OPTION) {
-	    	    String password = new String(pass.getPassword());
-	    	   
-				logica.iniciar_sesion_admin(password);
-	    	    this.vcal = new Ventana_Consulta_A_Logica(logica);
-	    	    this.jDesktopPane1.add(this.vcal);
-	    	    this.vcal.generar_tabla_atributos();
-	            this.vcal.setMaximum(true);
-	            this.vcal.setVisible(true);
-	    	  }
-	         
-	      } catch (PropertyVetoException e) {}
-	      	catch (SQLException e) {
-	    	  JOptionPane.showMessageDialog(null, "ERROR: \n" + e.getMessage()+"\nMensaje para el administrador: "
-	    	  									+"Verifique su contraseña, ó bien, consulte por el "
-	    	  									+ "funcionamiento de la base de datos.", "", JOptionPane.ERROR_MESSAGE );
-		} finally {
-			pass.setText("");
-		}
-		  
-	  }  
- 	
+              if (res == JOptionPane.OK_OPTION) {
+                String password = new String(pass.getPassword());
+               
+                logica.iniciar_sesion_admin(password);
+                this.vcal = new Ventana_Consulta_A_Logica(logica);
+                this.jDesktopPane1.add(this.vcal);
+                this.vcal.generar_tabla_atributos();
+                this.vcal.setMaximum(true);
+                this.vcal.setVisible(true);
+              }
+             
+          } catch (PropertyVetoException e) {}
+              catch (SQLException e) {
+              JOptionPane.showMessageDialog(null, "ERROR: \n" + e.getMessage()+"\nMensaje para el administrador: "
+                                                  +"Verifique su contraseï¿½a, ï¿½ bien, consulte por el "
+                                                  + "funcionamiento de la base de datos.", "", JOptionPane.ERROR_MESSAGE );
+        } finally {
+            pass.setText("");
+        }
+          
+      }  
+     
    //Accion que ocurre luego de presionar el boton de unidad personal
    private void mniUnidadPersonalActionPerformed(ActionEvent evt) {
-	   
-	   //Se pide el login
-	   JTextField nro_legajo = new JTextField();
-	   JPasswordField pass = new JPasswordField();
-	   boolean conectado = false;
-	   while (!conectado) {
-		   try {
-			   conectado = true;
-			   
-			   Object[] message = {
-			       "Legajo:", nro_legajo,
-			       "Contraseña:", pass
-			   };
-		
-			   int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos de inspector", JOptionPane.OK_CANCEL_OPTION);
-			   
-			   if (res == JOptionPane.OK_OPTION) {
-				   int legajo = this.validarCampos(nro_legajo,pass);
-				   logica.iniciar_sesion_usuario_inspector();
-				   String password = new String(pass.getPassword());
-				   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
-				   JOptionPane.showMessageDialog(null, "Bienvenido: "+nombre_completo, "Sesión iniciada", JOptionPane.PLAIN_MESSAGE);
-				   
-				   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
-				   this.vup = new VentanaUnidadPersonal(logica);
-				   this.jDesktopPane1.add(this.vup);
-				   this.vup.setMaximum(true);
-				   this.vup.setVisible(true);
-			   }
-				
-				//Si el login no fue correcto 
-		   	} 	catch (PropertyVetoException e) {}
-		   		catch (SQLException e) {
-		   			JOptionPane.showMessageDialog(null,e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-		   		}
-	   			catch (WrongInputException e) {
-				JOptionPane.showMessageDialog(null, "Datos erróneos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-		  	  	conectado = false;
+       
+       //Se pide el login
+       JTextField nro_legajo = new JTextField();
+       JPasswordField pass = new JPasswordField();
+       boolean conectado = false;
+       while (!conectado) {
+           try {
+               conectado = true;
+               
+               Object[] message = {
+                   "Legajo:", nro_legajo,
+                   "Contraseï¿½a:", pass
+               };
+        
+               int res = JOptionPane.showConfirmDialog(null, message, "Ingrese los datos de inspector", JOptionPane.OK_CANCEL_OPTION);
+               
+               if (res == JOptionPane.OK_OPTION) {
+                   int legajo = this.validarCampos(nro_legajo,pass);
+                   logica.iniciar_sesion_usuario_inspector();
+                   String password = new String(pass.getPassword());
+                   String nombre_completo =logica.iniciar_sesion_inspector(legajo,password);
+                   JOptionPane.showMessageDialog(null, "Bienvenido: "+nombre_completo, "Sesiï¿½n iniciada", JOptionPane.PLAIN_MESSAGE);
+                   
+                   //Se muestran los campos para ingresar las patentes, ubicacion y id parquimetro hasta que sean validos.
+                   this.vup = new VentanaUnidadPersonal(logica);
+                   this.jDesktopPane1.add(this.vup);
+                   this.vup.setMaximum(true);
+                   this.vup.setVisible(true);
+               }
+                
+                //Si el login no fue correcto 
+               }     catch (PropertyVetoException e) {}
+                   catch (SQLException e) {
+                       JOptionPane.showMessageDialog(null,e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+                   }
+                   catch (WrongInputException e) {
+                JOptionPane.showMessageDialog(null, "Datos errï¿½neos:\n" + e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+                    conectado = false;
 
-			} finally {
-				   nro_legajo.setText("");
-				   pass.setText("");
-			}
-		   	 
-	   }
+            } finally {
+                   nro_legajo.setText("");
+                   pass.setText("");
+            }
+                
+       }
 
-	   
+       
    }
    
    private void mniConectarActionPermformed(ActionEvent evt) {
-	   try {
-		   logica.iniciar_sesion_usuario_parquimetro();
-		   vp = new VentanaParquimetro(logica);
-		   this.jDesktopPane1.add(this.vp);
-		   this.vp.setMaximum(true);
-		   this.vp.setVisible(true);
-	   }
-	   catch (PropertyVetoException e) {}
-	   catch (SQLException e) {
-		   JOptionPane.showMessageDialog(null,e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-	   } 
+       try {
+           logica.iniciar_sesion_usuario_parquimetro();
+           vp = new VentanaParquimetro(logica);
+           this.jDesktopPane1.add(this.vp);
+           this.vp.setMaximum(true);
+           this.vp.setVisible(true);
+       }
+       catch (PropertyVetoException e) {}
+       catch (SQLException e) {
+           JOptionPane.showMessageDialog(null,e.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+       } 
    }
    
    private int validarCampos(JTextField nro_legajo, JPasswordField pass) throws WrongInputException{
-	   int toRet = 0;
-	   boolean faltante = (nro_legajo.getText().isEmpty()) || (pass.getPassword().length == 0);
-	   
-		   if (!faltante) {
-			   try {
-			   toRet = Integer.parseInt(nro_legajo.getText());
-			   
-			   }
-			   catch (NumberFormatException e) {
-				   throw new WrongInputException("El legajo debe ser numerico");
-			   }
-		   }
-		   else
-			   throw new WrongInputException("No deje espacios en blanco");
-	   
-	   return toRet;
+       int toRet = 0;
+       boolean faltante = (nro_legajo.getText().isEmpty()) || (pass.getPassword().length == 0);
+       
+           if (!faltante) {
+               try {
+               toRet = Integer.parseInt(nro_legajo.getText());
+               
+               }
+               catch (NumberFormatException e) {
+                   throw new WrongInputException("El legajo debe ser numerico");
+               }
+           }
+           else
+               throw new WrongInputException("No deje espacios en blanco");
+       
+       return toRet;
    }
   
 }

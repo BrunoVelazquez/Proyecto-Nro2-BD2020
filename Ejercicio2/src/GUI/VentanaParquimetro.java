@@ -35,9 +35,9 @@ public class VentanaParquimetro extends javax.swing.JInternalFrame
    private JButton btnConectar; 
    private Logica log;
    
-   	public VentanaParquimetro(Logica logica) 
+       public VentanaParquimetro(Logica logica) 
    {
-   		
+           
       super();
       initGUI();
       this.log = logica;
@@ -94,7 +94,7 @@ public class VentanaParquimetro extends javax.swing.JInternalFrame
          lblParquimetros.setBounds(10, 153, 99, 14);
          panel_Ubicaciones_Parquimetros.add(lblParquimetros);
          
-         lblTarjetas = new JLabel("Tarjetas (definidas por número de identificación):");
+         lblTarjetas = new JLabel("Tarjetas (definidas por nï¿½mero de identificaciï¿½n):");
          lblTarjetas.setBounds(10, 301, 99, 14);
          panel_Ubicaciones_Parquimetros.add(lblTarjetas);
          
@@ -112,81 +112,81 @@ public class VentanaParquimetro extends javax.swing.JInternalFrame
          btnConectar.setEnabled(false);
 
          lista_parquimetros.addListSelectionListener(new ListSelectionListener() {
-     		public void valueChanged(ListSelectionEvent e) {
-     			if (!model1.isEmpty())
-     				btnConectar.setEnabled(!lista_tarjetas.isSelectionEmpty());
-     		}
-       	 
+             public void valueChanged(ListSelectionEvent e) {
+                 if (!model1.isEmpty())
+                     btnConectar.setEnabled(!lista_tarjetas.isSelectionEmpty());
+             }
+            
         });
         lista_ubicaciones.addListSelectionListener(new ListSelectionListener() {
-     		public void valueChanged(ListSelectionEvent e) {
-     			generar_parquimetros(e);
-     			btnConectar.setEnabled(false);
-     		}
+             public void valueChanged(ListSelectionEvent e) {
+                 generar_parquimetros(e);
+                 btnConectar.setEnabled(false);
+             }
         });
         lista_tarjetas.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				btnConectar.setEnabled(!lista_parquimetros.isSelectionEmpty());
-			}
+            public void valueChanged(ListSelectionEvent e) {
+                btnConectar.setEnabled(!lista_parquimetros.isSelectionEmpty());
+            }
         });
         
         btnConectar.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		try {
-					String mensaje = log.conectar(lista_tarjetas.getSelectedValue(),lista_parquimetros.getSelectedValue());
-					
-					JOptionPane.showMessageDialog(null,mensaje,"", JOptionPane.PLAIN_MESSAGE);
-					
-					model3.removeAllElements();
-					btnConectar.setEnabled(false);
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE );
-				}
-        	}
-    	});
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String mensaje = log.conectar(lista_tarjetas.getSelectedValue(),lista_parquimetros.getSelectedValue());
+                    
+                    JOptionPane.showMessageDialog(null,mensaje,"", JOptionPane.PLAIN_MESSAGE);
+                    
+                    model3.removeAllElements();
+                    btnConectar.setEnabled(false);
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE );
+                }
+            }
+        });
    }
    
    private void generar_tartejas() {
-	   
-	   ArrayList<String> tarjetas = log.get_tarjetas();
-	   Iterator<String> ite_tarjetas = tarjetas.iterator();
-	   while (ite_tarjetas.hasNext()) {	   
-		   String id_tarjeta = ite_tarjetas.next();
-		   this.model1.addElement(id_tarjeta);
-	   }
-	}
+       
+       ArrayList<String> tarjetas = log.get_tarjetas();
+       Iterator<String> ite_tarjetas = tarjetas.iterator();
+       while (ite_tarjetas.hasNext()) {       
+           String id_tarjeta = ite_tarjetas.next();
+           this.model1.addElement(id_tarjeta);
+       }
+    }
    private void thisComponentHidden(ComponentEvent evt) 
    {
       this.log.desconectarBD();
    }
    
-   	private void generar_parquimetros(ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting()) {
-			model3.removeAllElements();
-			String id_parq = "";
-			String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
-			ArrayList<String> parquimetros = log.get_parquimetros_de_ubicaciones(ubicacion_seleccionada.split(","),"ubicaciones");
-			
-			Iterator<String> ite_parquimetros = parquimetros.iterator();
-			   
-		   while (ite_parquimetros.hasNext()) {
-			   id_parq = ite_parquimetros.next();
-			   model3.addElement(id_parq);
-		   }
-		}
-		
-	}
-	
-   	private void generar_ubicaciones() {
-	   
-	   ArrayList<String[]> ubicaciones = this.log.get_ubicaciones("ubicaciones");
-	   Iterator<String[]> ite_ubicaciones = ubicaciones.iterator();
-	   
-	   
-	   while (ite_ubicaciones.hasNext()) {
-		   String[] calle_altura = ite_ubicaciones.next();
-		   String calle_altura_para_lista = calle_altura[0] +","+ calle_altura[1];
-		   this.model2.addElement(calle_altura_para_lista);		   
-	   }
+       private void generar_parquimetros(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            model3.removeAllElements();
+            String id_parq = "";
+            String ubicacion_seleccionada = (String) lista_ubicaciones.getSelectedValue();
+            ArrayList<String> parquimetros = log.get_parquimetros_de_ubicaciones(ubicacion_seleccionada.split(","),"ubicaciones");
+            
+            Iterator<String> ite_parquimetros = parquimetros.iterator();
+               
+           while (ite_parquimetros.hasNext()) {
+               id_parq = ite_parquimetros.next();
+               model3.addElement(id_parq);
+           }
+        }
+        
+    }
+    
+       private void generar_ubicaciones() {
+       
+       ArrayList<String[]> ubicaciones = this.log.get_ubicaciones("ubicaciones");
+       Iterator<String[]> ite_ubicaciones = ubicaciones.iterator();
+       
+       
+       while (ite_ubicaciones.hasNext()) {
+           String[] calle_altura = ite_ubicaciones.next();
+           String calle_altura_para_lista = calle_altura[0] +","+ calle_altura[1];
+           this.model2.addElement(calle_altura_para_lista);           
+       }
    }
 }

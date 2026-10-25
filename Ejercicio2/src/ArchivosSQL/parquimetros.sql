@@ -346,7 +346,7 @@ CREATE TABLE multas
 
     START TRANSACTION;
     SELECT descuento INTO descuentoTarjeta FROM tipos_tarjeta NATURAL JOIN tarjetas WHERE (tarjetas.id_tarjeta = id_tarjeta);
-    SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);	
+    SELECT tarifa INTO tarifaUbicacion FROM parquimetros NATURAL JOIN ubicaciones WHERE (parquimetros.id_parq = id_parq);    
 
     #Si existe un estacionamiento abierto, lo cierro
     IF EXISTS( SELECT * FROM estacionamientos WHERE (estacionamientos.id_tarjeta = id_tarjeta AND estacionamientos.fecha_sal IS NULL AND estacionamientos.hora_sal IS NULL )) THEN #Actualizo la fecha y hora de salida (hora actual) y le cobro
@@ -381,7 +381,7 @@ CREATE TABLE multas
     END IF;
     COMMIT;
     END; !
-	DELIMITER ;
+    DELIMITER ;
 
 # --------- Punto 2 ----------
 
