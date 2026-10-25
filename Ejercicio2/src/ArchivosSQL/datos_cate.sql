@@ -88,7 +88,7 @@ INSERT INTO tarjetas(id_tarjeta,saldo,tipo,patente) VALUES (9,0,'normal','AAA888
 
 #-------------------------Inspectores----------------------------------#
 
-# un inspector para cada dia de la semana para la ubicaci�n mitre al 100
+# un inspector para cada dia de la semana para la ubicación mitre al 100
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
 VALUES (1,11,'nombreins1','apellidoins1',MD5('1'));
 INSERT INTO Inspectores(legajo,dni,nombre,apellido,password) 
@@ -181,7 +181,7 @@ VALUES (12,401,DATE_SUB(CURDATE() , INTERVAL 1 DAY),'11:0:00',NULL,NULL);
 
 
 #-------------------------Asociado_con----------------------------------#
-# ubicaci�n: Mitre al 200
+# ubicación: Mitre al 200
 # inspector 10 asociado todos los dias y turnos (comodin) 
 
 INSERT INTO Asociado_con(id_asociado_con,legajo,calle,altura,dia,turno) 
@@ -221,11 +221,11 @@ VALUES (1072,10,'Alem',300,'Do','T');
 
 
 
-# ubicaci�n: Mitre al 100:
-# inspector 1 asociado los lunes ma�ana y tarde
-# inspector 2 asociado los martes ma�ana y tarde
+# ubicación: Mitre al 100:
+# inspector 1 asociado los lunes mañana y tarde
+# inspector 2 asociado los martes mañana y tarde
 # ...
-# inspector 7 asociado los domingos ma�ana y tarde
+# inspector 7 asociado los domingos mañana y tarde
 
 #Inspector 1
 INSERT INTO Asociado_con(id_asociado_con,legajo,calle,altura,dia,turno) 

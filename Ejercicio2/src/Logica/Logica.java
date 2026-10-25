@@ -330,7 +330,7 @@ public class Logica {
 		if(rs.next())
 			toRet = rs.getInt("id_asociado_con");
 		else // No encuentra id_asociado_Con
-			throw new SQLException("Inspector con legajo "+legajo_inspector+" no tiene asociado dicha ubicación, no se labrarán las multas.");
+			throw new SQLException("Inspector con legajo "+legajo_inspector+" no tiene asociado dicha ubicaciÃ³n, no se labraron las multas.");
 		
 		stmt.close();
 		rs.close();
@@ -360,7 +360,7 @@ public class Logica {
 		
 		if(rs.next()) {
 			turno = rs.getString("turno");
-			if (turno.equals("M")) { 	// es turno mañana
+			if (turno.equals("M")) { 	// es turno maÃ±ana
 				limiteInf = "08:00:00";
 				limiteSup = "13:59:59";
 			} else {					// es turno tarde
@@ -375,7 +375,7 @@ public class Logica {
 		rs.close();
 		stmt.close();
 		if (!le_corresponde)
-			throw new SQLException("No le corresponde el día y/o el turno actual, no se labrarán las multas.");
+			throw new SQLException("No le corresponde el dÃ­a y/o el turno actual, no se labraron las multas.");
 		
 	}
 
